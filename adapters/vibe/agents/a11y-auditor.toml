@@ -1,0 +1,5 @@
+# Read-only subagent, delegated to via the task tool.
+# System prompt: ~/.vibe/prompts/a11y-auditor.md (installed from senior-ai/prompts/)
+agent_type = "subagent"
+system_prompt_id = "a11y-auditor"
+disabled_tools = ["edit", "write_file"]

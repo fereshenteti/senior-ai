@@ -1,40 +1,90 @@
 # senior-ai
 
-Senior frontend engineering rules, skills and reviewer agents for Claude Code, packaged as a plugin.
-Focus: Angular, SCSS, design-token fidelity, Storybook and WCAG 2.2 AA accessibility.
+One set of general-purpose AI coding rules, skills and agents, installed for **Mistral Vibe**, **Claude Code**, or both.
 
-## Install on a machine
+Built for pixel-perfect frontend work (Angular, SCSS, design tokens, Storybook) with code-review and accessibility standards that apply to every project. Projects only add a short `AGENTS.md` with their own facts.
+
+## Install
+
+```bash
+git clone https://github.com/fereshenteti/senior-ai.git ~/senior-ai && cd ~/senior-ai
+./install.sh                    # asks: both (default), Vibe or Claude Code
+./install.sh --tool vibe        # or: --tool claude | --tool both
+./install.sh --dry-run          # preview, change nothing
+./install.sh --link             # use this folder directly instead of a copy
+./install.sh --uninstall        # remove everything and restore backups
+```
+
+| Tool | What the installer does | Updates |
+|---|---|---|
+| Claude Code | Installs the `senior-ai@feres` plugin from GitHub (with `--link`: from this folder). Rules are injected at session start; skills and agents are `senior-ai:<name>`. | `claude plugin marketplace update feres` |
+| Mistral Vibe | Copies skills, prompts, agents and rules into `~/.vibe` (with `--link`: symlinks to this folder). Existing files are moved to `~/.senior-ai/backups/` and restored on `--uninstall`; your own `~/.vibe/AGENTS.md` gets a marked block instead of being replaced. | `git pull`, then re-run `./install.sh` (automatic with `--link`) |
+
+Claude Code only, without cloning:
 ```bash
 claude plugin marketplace add fereshenteti/senior-ai
-claude plugin install senior-ai@senior-ai
+claude plugin install senior-ai@feres
 ```
-That's all. The rules in `AGENTS.md` are injected into every session automatically, and the skills and agents
-are available everywhere as `senior-ai:<name>`. Get new versions with `claude plugin marketplace update senior-ai`.
+
+Then:
+1. **MCP servers:** Vibe: merge `adapters/vibe/config.example.toml` into `~/.vibe/config.toml`. Claude Code: run the commands in `adapters/claude/mcp.md`.
+2. **Vision model (Vibe):** set a vision-capable `active_model` in `ui-builder.toml` and `visual-reviewer.toml` (or globally) so reference screenshots can be read.
 
 ## Integrate into a project
-In Claude Code, from the project root:
+
+From the project root, run `/senior-ai:setup-project` in Claude Code, or ask Vibe to use the `setup-project` skill. It asks which tools the team uses, then:
+- creates a project `AGENTS.md` (project facts and exceptions only; it overrides the global rules) and fills in the detected stack, commands and design source;
+- adds `.visual-check/` to `.gitignore`;
+- for Claude Code: adds a `CLAUDE.md` that imports `AGENTS.md`, and enables `senior-ai@feres` in `.claude/settings.json`, so every teammate who opens the project is prompted to install the plugin.
+
+Commit those files. Vibe users install senior-ai once per machine with `./install.sh --tool vibe`.
+
+## Use
+
+```bash
+vibe --agent ui-builder                # Mistral Vibe
+claude --agent senior-ai:ui-builder    # Claude Code
 ```
-/senior-ai:init
-```
-It:
-- enables the plugin in `.claude/settings.json`, so every teammate who opens the project is prompted to install it;
-- writes a project `AGENTS.md` with the detected stack, commands and design source, imported from `CLAUDE.md`;
-- adds `.visual-check/` to `.gitignore`.
+Example prompt: `Implement the Button component. Reference: @design/screens/button.png`
 
-Commit `.claude/settings.json`, `AGENTS.md` and `CLAUDE.md`. The project `AGENTS.md` holds project facts and
-exceptions only; when it contradicts the global rules, the project wins.
+The `ui-builder` agent implements the component with tokens, writes its Storybook stories including an `AllStates` story that mirrors the reference sheet, runs the visual check, and delegates reviews to the read-only `visual-reviewer`, `a11y-auditor` and `code-auditor` subagents.
 
-Teammates without the plugin can run `claude plugin install senior-ai@senior-ai --scope project` after trusting the folder.
+## What's inside
 
-## Contents
-| Path | What |
+| Path | Shared? | Content |
+|---|---|---|
+| `AGENTS.md` | both tools | Global rules; a project `AGENTS.md` overrides them |
+| `skills/` | both tools | Agent Skills (`SKILL.md` + `references/` loaded on demand + `scripts/`), including `setup-project` and its `AGENTS.project.md` template |
+| `prompts/` | both tools | System prompts of the four agents |
+| `adapters/vibe/` | Vibe | Agent profiles (`.toml`), MCP config example |
+| `adapters/claude/` | Claude Code | Agent frontmatter, MCP commands |
+| `.claude-plugin/`, `hooks/`, `agents/` | Claude Code | Plugin and `feres` marketplace manifests, the hook that injects `AGENTS.md`, and the agents built by `scripts/build-claude-agents.sh` |
+
+### Skills
+| Skill | Purpose |
 |---|---|
-| `AGENTS.md` | Global rules, injected at session start by `hooks/inject-rules.sh` |
-| `skills/` | `a11y`, `angular`, `clean-code`, `code-review-standards`, `design-fidelity`, `scss-styling`, `storybook`, `visual-check`, `init` |
-| `agents/` | `code-auditor`, `a11y-auditor`, `visual-reviewer` (read-only reviewers), `ui-builder` (`claude --agent senior-ai:ui-builder`) |
-| `scripts/init-project.mjs` | Project setup used by `/senior-ai:init`; also runnable directly with `node` |
-| `templates/AGENTS.md` | Project `AGENTS.md` template |
+| `angular` | Latest Angular best practices for the detected version (signals, control flow, OnPush, `inject()`, typed forms, testing with the project's runner) |
+| `scss-styling` | SCSS only, no CSS frameworks, tokens instead of hard-coded values, states, theming |
+| `design-fidelity` | Find and strictly follow the design source; extract tokens from DESIGN.md; report missing tokens |
+| `storybook` | CSF3 stories, autodocs, `AllStates` story mirroring the reference sheet |
+| `visual-check` | Pixel-compare a story with its reference image (`scripts/visual-check.mjs`) and fix in a loop |
+| `code-review-standards` | Review method, severity scale, report format + Angular/TS/SCSS/security checklists |
+| `a11y` | WCAG 2.2 AA build rules and audit method |
+| `clean-code` | Language-agnostic coding standards |
+| `setup-project` | Integrate senior-ai into a project (user-invoked) |
 
-## Develop
-Test local changes without pushing: `claude --plugin-dir ~/path/to/senior-ai`. Run `claude plugin validate .` before committing,
-and bump `version` in `.claude-plugin/plugin.json` and `marketplace.json` for each release.
+### Agents
+| Agent | Role |
+|---|---|
+| `ui-builder` | Main agent: implement, document, verify |
+| `visual-reviewer` | Read-only: rendered vs. reference differences, with causes |
+| `a11y-auditor` | Read-only: WCAG 2.2 AA audit |
+| `code-auditor` | Read-only: code review |
+
+## Writing or changing skills
+- Keep skills **tool-neutral**: say "read the file" or "run the command", never a tool-specific tool name, and don't set `allowed-tools` (Vibe and Claude Code name their tools differently).
+- Keep `SKILL.md` short and move detail into `references/*.md`, loaded only when relevant.
+- One skill per folder directly under `skills/`; Vibe does not discover nested skill folders.
+- Add a new agent: write `prompts/<name>.md`, then `adapters/vibe/agents/<name>.toml` and `adapters/claude/agents/<name>.md` (frontmatter only).
+- After changing `prompts/` or `adapters/claude/agents/`, run `scripts/build-claude-agents.sh` and commit the generated `agents/`.
+- Releasing for Claude Code: bump `version` in `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`, run `claude plugin validate .`, commit and push. Test unpushed changes with `claude --plugin-dir .`.

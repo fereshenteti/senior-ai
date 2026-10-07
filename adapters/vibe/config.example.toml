@@ -1,0 +1,18 @@
+# Merge these blocks into ~/.vibe/config.toml (the installer never edits that file).
+
+# Browser automation: screenshots of Storybook, manual UI checks.
+[[mcp_servers]]
+name = "playwright"
+transport = "stdio"
+command = "npx"
+args = ["-y", "@playwright/mcp@latest"]
+
+# Official Angular CLI MCP server: current best practices and documentation search.
+[[mcp_servers]]
+name = "angular_cli"
+transport = "stdio"
+command = "npx"
+args = ["-y", "@angular/cli", "mcp"]
+
+# Optional: make ui-builder the default agent.
+# default_agent = "ui-builder"

@@ -2,9 +2,7 @@
 
 These rules apply to every project. A project's own `AGENTS.md` (or `CLAUDE.md`) states
 project facts and exceptions; **when it contradicts this file, the project file wins.**
-
-The skills and agents named below come from the `senior-ai` Claude Code plugin, where their full names
-are `senior-ai:<name>` (e.g. `senior-ai:scss-styling`, `senior-ai:code-auditor`).
+In Claude Code, the skills and agents named below come from the `senior-ai` plugin as `senior-ai:<name>`.
 
 ## Working style
 - Read before writing: check how the codebase already solves a problem before adding a new pattern, helper or dependency.
