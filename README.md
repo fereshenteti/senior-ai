@@ -87,4 +87,4 @@ The `ui-builder` agent implements the component with tokens, writes its Storyboo
 - One skill per folder directly under `skills/`; Vibe does not discover nested skill folders.
 - Add a new agent: write `prompts/<name>.md`, then `adapters/vibe/agents/<name>.toml` and `adapters/claude/agents/<name>.md` (frontmatter only).
 - After changing `prompts/` or `adapters/claude/agents/`, run `scripts/build-claude-agents.sh` and commit the generated `agents/`.
-- Releasing for Claude Code: bump `version` in `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`, run `claude plugin validate .`, commit and push. Test unpushed changes with `claude --plugin-dir .`.
+- Releasing for Claude Code: `scripts/release.sh <version>` (e.g. `1.2.0`) sets the version in both `.claude-plugin/` manifests, rebuilds `agents/` and validates the plugin; then commit, push, and run `claude plugin marketplace update feres` on each machine. Test unpushed changes with `claude --plugin-dir .`.
