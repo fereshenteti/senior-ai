@@ -2,7 +2,6 @@
 name: setup-project
 description: Integrate senior-ai into the current project for Claude Code, Mistral Vibe or both - a project AGENTS.md with the detected stack, commands and design source, plus (for Claude Code) the shared plugin settings so every teammate gets senior-ai. Use when the user asks to set up, install or integrate senior-ai in a project.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Integrate senior-ai into this project
