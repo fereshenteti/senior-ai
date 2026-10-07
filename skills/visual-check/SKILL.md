@@ -20,8 +20,7 @@ Compares the rendered `AllStates` story of a component with its reference image 
 2. Storybook must be running (`npm run storybook`, default `http://localhost:6006`). Start it in the background if it is not running.
 
 ## Run
-The script is in this skill's folder at `scripts/visual-check.mjs`. If you don't know the skill's folder, it is
-`~/.vibe/skills/visual-check/` (Vibe) or `~/.claude/skills/visual-check/` (Claude Code). Run it **from the project root**:
+The script is in this skill's folder at `scripts/visual-check.mjs` (the base directory shown when the skill loads). Run it **from the project root**:
 ```bash
 node <skill-dir>/scripts/visual-check.mjs \
   --story components-button--all-states \

@@ -1,0 +1,16 @@
+{
+  "name": "senior-ai",
+  "owner": {
+    "name": "Feres Henteti"
+  },
+  "description": "Senior frontend engineering rules, skills and reviewer agents for Claude Code.",
+  "plugins": [
+    {
+      "name": "senior-ai",
+      "displayName": "Senior AI",
+      "version": "1.0.0",
+      "description": "Senior frontend engineering rules, skills and reviewer agents: Angular, SCSS, design-token fidelity, Storybook and WCAG 2.2 AA.",
+      "source": "./"
+    }
+  ]
+}
