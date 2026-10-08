@@ -175,9 +175,8 @@ async function install(options, prompter) {
     const lines =
       tool.id === 'vibe' ? installForVibe({ tool, ops, extras, chosen }) : installForClaude({ ops, extras, chosen, options });
     for (const { extra, present } of statuses) if (!present && !chosen.has(extra.id)) lines.push(`− ${extra.name}: skipped`);
-    for (const { extra, present } of statuses) {
-      if ((present || chosen.has(extra.id)) && extra.setup) lines.push(`! ${extra.name}: ${extra.setup}`);
-    }
+    // Login and token instructions, only for extras installed in this run.
+    for (const extra of extras.filter(e => chosen.has(e.id) && e.setup)) lines.push(`! ${extra.name}: ${extra.setup}`);
     summary.push({ tool, lines });
   }
 
