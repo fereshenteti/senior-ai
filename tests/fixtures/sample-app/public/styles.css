@@ -1,0 +1,11 @@
+:root {
+  --color-text: #1f2328;
+  --color-accent: #0969da;
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+  font-family: system-ui, sans-serif;
+  color: var(--color-text);
+}
+main { max-width: 40rem; margin: var(--space-4) auto; padding: 0 var(--space-4); }
+form { display: flex; gap: var(--space-2); align-items: center; }
+button { background: var(--color-accent); color: white; border: 0; padding: var(--space-2) var(--space-4); border-radius: 4px; }
