@@ -147,7 +147,10 @@ async function install(options, prompter) {
   say(`senior-ai ${META.version} installer\n`);
   say('Looking for AI tools…');
   const detected = detectTools();
-  for (const tool of detected) say(`  ${tool.installed ? '✓' : '·'} ${tool.name}${tool.installed ? ` ${tool.version}` : ': not found'}`);
+  for (const tool of detected) {
+    const how = tool.via && tool.via !== 'command' ? ` (${tool.via})` : '';
+    say(`  ${tool.installed ? '✓' : '·'} ${tool.name}${tool.installed ? ` ${tool.version}${how}` : ': not found'}`);
+  }
   if (!detected.some(tool => tool.installed)) {
     say('\nNo supported AI tool found. Install one of them, then run this installer again:');
     showInstallHelp(detected);
@@ -186,6 +189,9 @@ async function install(options, prompter) {
     for (const line of lines) say(`  ${line}`);
   }
   say('\nNext: in a project, run /senior-ai:setup-project (Claude Code) or ask Vibe to use the setup-project skill.');
+  if (targets.some(tool => tool.id === 'vibe' && tool.via !== 'command')) {
+    say(`In ${targets.find(tool => tool.id === 'vibe').via.replace(/ extension$/, '')}, reload the window, then pick a senior-ai agent (orchestrator, ui-builder) in the Vibe panel's agent selector.`);
+  }
   if (targets.some(tool => tool.id === 'vibe') && options.mode === 'copy') {
     say(`Vibe gets a copy: after a git pull, re-run ${INSTALL_COMMAND} to update it.`);
   }

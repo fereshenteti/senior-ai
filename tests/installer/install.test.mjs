@@ -45,6 +45,16 @@ test('with no AI tool, explains how to install one and changes nothing', () => {
   assert.equal(fs.existsSync(m.vibeDir), false);
 });
 
+test('installs for Vibe when only its VS Code extension is installed', () => {
+  const m = machine({ vibe: false });
+  fs.mkdirSync(path.join(m.home, '.vscode', 'extensions', 'mistralai.mistral-vibe-code-1.23.102-win32-x64'), { recursive: true });
+  const result = m.install('--tool', 'vibe', '--yes', '--no-extras');
+  assert.equal(result.status, 0, result.stderr + result.stdout);
+  assert.match(result.stdout, /Mistral Vibe 1\.23\.102 \(VS Code extension\)/);
+  assert.match(result.stdout, /agent selector/);
+  assert.ok(fs.existsSync(path.join(m.vibeDir, 'agents', 'orchestrator.toml')));
+});
+
 test('installs everything for both tools with --yes', () => {
   const m = machine();
   const result = m.install('--yes');

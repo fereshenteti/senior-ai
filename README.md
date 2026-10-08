@@ -63,7 +63,7 @@ On Windows (PowerShell):
 irm https://claude.ai/install.ps1 | iex
 ```
 
-**Mistral Vibe** ([docs](https://github.com/mistralai/mistral-vibe)), on macOS and Linux:
+**Mistral Vibe**, either as the [Mistral Vibe VS Code extension](https://marketplace.visualstudio.com/items?itemName=mistralai.mistral-vibe-code) (also works in Cursor, Windsurf and VSCodium; nothing else to install), or as the command-line tool ([docs](https://github.com/mistralai/mistral-vibe)), on macOS and Linux:
 
 ```bash
 curl -LsSf https://mistral.ai/vibe/install.sh | bash
@@ -163,7 +163,7 @@ To start a new session as the orchestrator:
 claude --agent orchestrator
 ```
 
-In Vibe, press `Shift+Tab` until the agent shown is `orchestrator`, or start with `vibe --agent orchestrator`. The orchestrator delegates to senior-ai's subagents without asking each time; what they do still follows your approvals.
+In Vibe, press `Shift+Tab` until the agent shown is `orchestrator`, or start with `vibe --agent orchestrator`. In the Vibe VS Code extension, pick `orchestrator` in the panel's agent selector. The orchestrator delegates to senior-ai's subagents without asking each time; what they do still follows your approvals.
 
 The orchestrator writes the story and its acceptance criteria in `.senior-ai/stories/`, asks the architect when the work touches the structure, delegates each task with a review loop, has QA verify the result, and reports back. It asks you before committing, pushing, deploying or adding dependencies.
 

@@ -14,6 +14,11 @@
 
 Without a terminal (CI, scripts) and without `--yes`, it installs for every tool found and skips the extras.
 
+## How tools are found
+
+- **Claude Code:** the `claude` command answers `claude --version`.
+- **Mistral Vibe:** the `vibe` command answers `vibe --version`, **or** the Mistral Vibe VS Code extension (`mistralai.mistral-vibe-code`) is installed in VS Code, VS Code Insiders, Cursor, Windsurf, VSCodium or VS Code's remote server. The extension bundles its own Vibe and reads the same folder (`~/.vibe`, or `VIBE_HOME`), so senior-ai installs the same way for both.
+
 ## What it changes
 
 **Claude Code:** the `feres` marketplace (this repository) and the `senior-ai@feres` plugin; the extras you chose.

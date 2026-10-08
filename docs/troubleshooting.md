@@ -27,5 +27,8 @@ It only uses the project's own Prettier and ESLint (`node_modules/.bin`). Run `n
 **Vibe: a run started with `vibe -p` never finishes**
 Without a terminal, nobody can answer Vibe's approval prompts, so it waits. For unattended runs, add `--auto-approve` (senior-ai's safety guard still refuses destructive commands and secrets, but actions that would normally need your approval, such as commits, are no longer asked).
 
+**Vibe is only installed as the VS Code extension**
+That's supported: the installer finds the extension and installs into the same folder it reads (`%USERPROFILE%\.vibe` on Windows, `~/.vibe` elsewhere). Afterwards, reload the editor window and pick a senior-ai agent in the Vibe panel's agent selector. Safety hooks run with Node, so Node.js must be on the PATH the editor starts with: restart the editor after installing Node.
+
 **Vibe agents don't appear**
 Re-run the installer with `--tool vibe` and restart Vibe. Main agents are picked with `Shift+Tab`; reviewers are subagents that the main agent calls.
