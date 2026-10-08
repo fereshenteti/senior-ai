@@ -1,0 +1,5 @@
+# Generated from departments/frontend/agents/ui-builder.md; edit that file, not this one.
+# Main agent: pick it with Shift+Tab, or start with `vibe --agent ui-builder`
+system_prompt_id = "ui-builder"
+# Needs a vision-capable model to read screenshots, for example:
+# active_model = "mistral-medium-3.5"

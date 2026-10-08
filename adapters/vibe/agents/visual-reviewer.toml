@@ -1,7 +1,0 @@
-# Read-only subagent, delegated to via the task tool.
-# System prompt: ~/.vibe/prompts/visual-reviewer.md (installed from senior-ai/prompts/)
-agent_type = "subagent"
-system_prompt_id = "visual-reviewer"
-disabled_tools = ["edit", "write_file"]
-# Must be a vision-capable model to compare screenshots:
-# active_model = "mistral-medium-3.5"

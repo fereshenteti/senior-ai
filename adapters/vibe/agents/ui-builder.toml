@@ -1,5 +1,0 @@
-# Main agent: start with `vibe --agent ui-builder`
-# System prompt: ~/.vibe/prompts/ui-builder.md (installed from senior-ai/prompts/)
-system_prompt_id = "ui-builder"
-# Pick a vision-capable model so reference screenshots can be read:
-# active_model = "mistral-medium-3.5"

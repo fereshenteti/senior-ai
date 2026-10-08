@@ -1,0 +1,7 @@
+# Generated from departments/frontend/agents/visual-reviewer.md; edit that file, not this one.
+# Subagent: the main agent delegates to it with the task tool.
+agent_type = "subagent"
+system_prompt_id = "visual-reviewer"
+disabled_tools = ["edit", "write_file"]
+# Needs a vision-capable model to read screenshots, for example:
+# active_model = "mistral-medium-3.5"
