@@ -1,3 +1,4 @@
-# Windows launchers need CRLF; shell scripts need LF on every checkout.
+# Unix line endings everywhere (scripts, generated files) except the Windows launcher.
+* text=auto eol=lf
 *.cmd text eol=crlf
-*.sh text eol=lf
+*.png binary
