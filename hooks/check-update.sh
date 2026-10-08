@@ -7,7 +7,8 @@
 
 set -uo pipefail
 
-LATEST_URL="https://raw.githubusercontent.com/fereshenteti/senior-ai/main/.claude-plugin/plugin.json"
+# The GitHub API serves the current file; raw.githubusercontent.com can lag a push by several minutes.
+LATEST_URL="https://api.github.com/repos/fereshenteti/senior-ai/contents/.claude-plugin/plugin.json"
 STATE_DIR="${SENIOR_AI_STATE_DIR:-$HOME/.senior-ai}"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 TOOL="${2:-}"
@@ -30,7 +31,7 @@ latest_version() {
     cat "$cache"
     return
   fi
-  fetched="$(curl -fsS --max-time 3 "$LATEST_URL" 2>/dev/null | json_version)"
+  fetched="$(curl -fsS --max-time 3 -H "Accept: application/vnd.github.raw+json" "$LATEST_URL" 2>/dev/null | json_version)"
   if [ -n "$fetched" ]; then
     mkdir -p "$STATE_DIR" && printf '%s\n' "$fetched" > "$cache"
     echo "$fetched"
