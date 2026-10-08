@@ -1,0 +1,41 @@
+[
+  {
+    "id": "session-context",
+    "script": "session-context.mjs",
+    "description": "Load the global rules and the project's status board",
+    "claude": { "event": "SessionStart", "matcher": "startup|resume|clear|compact", "timeout": 10 }
+  },
+  {
+    "id": "update-check",
+    "script": "check-update.mjs",
+    "description": "Tell the user when a newer senior-ai version is available",
+    "claude": { "event": "SessionStart", "matcher": "startup", "timeout": 10 },
+    "vibe": { "type": "post_agent", "timeout": 10 }
+  },
+  {
+    "id": "safety-guard",
+    "script": "guard.mjs",
+    "description": "Refuse destructive commands and secrets in files; ask before commits, pushes, deploys and new dependencies",
+    "claude": { "event": "PreToolUse", "matcher": "Bash|PowerShell|Write|Edit|MultiEdit", "timeout": 10 },
+    "vibe": { "type": "pre_tool", "match": "re:^(bash|git_bash|powershell|write_file|edit)$", "timeout": 10 }
+  },
+  {
+    "id": "format-lint",
+    "script": "format-lint.mjs",
+    "description": "Format the changed file with the project's Prettier and report its ESLint errors",
+    "claude": { "event": "PostToolUse", "matcher": "Write|Edit|MultiEdit", "timeout": 60 },
+    "vibe": { "type": "post_tool", "match": "re:^(write_file|edit)$", "timeout": 60 }
+  },
+  {
+    "id": "done-gate",
+    "script": "done-gate.mjs",
+    "description": "Send the agent back once if code changed but nothing was verified",
+    "claude": { "event": "Stop", "timeout": 10 }
+  },
+  {
+    "id": "report-check",
+    "script": "report-check.mjs",
+    "description": "Make sure checker reports carry a PASS/FAIL verdict",
+    "claude": { "event": "PostToolUse", "matcher": "Agent|Task", "timeout": 10 }
+  }
+]

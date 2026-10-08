@@ -66,31 +66,42 @@ export function installVibe({ ops, src, vibeDir, version }) {
     ops.place(path.join(src, 'AGENTS.md'), agents);
   }
 
-  // Update notice: a post_agent hook that tells the user when GitHub has a newer version.
-  // Vibe runs hook commands through the system shell (cmd.exe on Windows), so the command is
-  // plain `node "<path>"` with forward slashes, which every shell and Node accept.
-  const noticeDir = path.join(vibeDir, 'senior-ai');
-  const script = path.join(noticeDir, 'check-update.mjs');
+  // Hooks: the scripts go to <vibe>/senior-ai/ (always copied: hooks must not depend on this
+  // folder), with the installed version and the source folder for the update notice.
+  const hooksDir = path.join(vibeDir, 'senior-ai');
+  const hookSrc = path.join(src, 'hooks');
+  for (const name of fs.readdirSync(hookSrc).filter(name => name.endsWith('.mjs')).sort()) {
+    ops.place(path.join(hookSrc, name), path.join(hooksDir, name), 'copy');
+  }
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'senior-ai-'));
   fs.writeFileSync(path.join(tmp, 'VERSION'), `${version}\n`);
   fs.writeFileSync(path.join(tmp, 'SOURCE'), `${path.resolve(src, '..', '..')}\n`);
-  ops.place(path.join(src, 'hooks', 'check-update.mjs'), script, 'copy');
-  ops.place(path.join(tmp, 'VERSION'), path.join(noticeDir, 'VERSION'), 'copy');
-  ops.place(path.join(tmp, 'SOURCE'), path.join(noticeDir, 'SOURCE'), 'copy');
-  const command = `node "${script.split(path.sep).join('/')}" --tool vibe`;
-  ops.addBlock(
-    path.join(vibeDir, 'hooks.toml'),
-    [
-      '[[hooks]]',
-      'name = "senior-ai-update-check"',
-      'type = "post_agent"',
-      `command = ${JSON.stringify(command)}`,
-      'timeout = 10.0',
-      'description = "Tell the user when a newer senior-ai version is available."',
-    ].join('\n'),
-    'tomlblock',
-  );
+  ops.place(path.join(tmp, 'VERSION'), path.join(hooksDir, 'VERSION'), 'copy');
+  ops.place(path.join(tmp, 'SOURCE'), path.join(hooksDir, 'SOURCE'), 'copy');
   fs.rmSync(tmp, { recursive: true, force: true });
+  const registry = JSON.parse(fs.readFileSync(path.join(hookSrc, 'registry.json'), 'utf8'));
+  ops.addBlock(path.join(vibeDir, 'hooks.toml'), vibeHooksToml(registry, hooksDir), 'tomlblock');
+}
+
+// One [[hooks]] entry per hook that supports Vibe. Vibe runs hook commands through the system
+// shell (cmd.exe on Windows), so the command is plain `node "<path>"` with forward slashes,
+// which every shell and Node accept.
+export function vibeHooksToml(registry, hooksDir) {
+  return registry
+    .filter(hook => hook.vibe)
+    .map(hook => {
+      const script = path.join(hooksDir, hook.script).split(path.sep).join('/');
+      const lines = [
+        '[[hooks]]',
+        `name = ${JSON.stringify(`senior-ai-${hook.id}`)}`,
+        `type = ${JSON.stringify(hook.vibe.type)}`,
+        `command = ${JSON.stringify(`node "${script}" --tool vibe`)}`,
+      ];
+      if (hook.vibe.match) lines.push(`match = ${JSON.stringify(hook.vibe.match)}`);
+      lines.push(`timeout = ${hook.vibe.timeout.toFixed(1)}`, `description = ${JSON.stringify(hook.description)}`);
+      return lines.join('\n');
+    })
+    .join('\n\n');
 }
 
 // Writes senior-ai's MCP block: the servers it installed before plus the newly chosen ones.

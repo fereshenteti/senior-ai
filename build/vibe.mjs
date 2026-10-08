@@ -3,7 +3,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { readAgents, readSkills, REPO, resetDir, writeFile } from './lib.mjs';
+import { copyHookScripts, readAgents, readSkills, REPO, resetDir, writeFile } from './lib.mjs';
 
 const OUT_DIR = 'dist/vibe';
 
@@ -32,5 +32,6 @@ export function buildVibe(outRoot = REPO) {
     writeFile(path.join(out, 'prompts', `${agent.name}.md`), agent.body);
   }
   for (const skill of readSkills()) fs.cpSync(skill.dir, path.join(out, 'skills', skill.name), { recursive: true });
-  writeFile(path.join(out, 'hooks', 'check-update.mjs'), fs.readFileSync(path.join(REPO, 'hooks', 'check-update.mjs')));
+  copyHookScripts(path.join(out, 'hooks'));
+  writeFile(path.join(out, 'hooks', 'registry.json'), fs.readFileSync(path.join(REPO, 'hooks', 'registry.json')));
 }

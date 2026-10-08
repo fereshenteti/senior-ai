@@ -3,7 +3,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { json, readAgents, readMeta, readSkills, REPO, resetDir, writeFile } from './lib.mjs';
+import { copyHookScripts, json, readAgents, readHooks, readMeta, readSkills, REPO, resetDir, writeFile } from './lib.mjs';
 
 const PLUGIN_DIR = 'dist/claude';
 const CLAUDE_MODELS = { session: 'inherit', small: 'haiku', mid: 'sonnet', top: 'opus' };
@@ -44,7 +44,25 @@ export function buildClaude(outRoot = REPO) {
   }));
 
   fs.copyFileSync(path.join(REPO, 'AGENTS.md'), path.join(out, 'AGENTS.md'));
-  for (const agent of readAgents()) writeFile(path.join(out, 'agents', `${agent.name}.md`), agentFile(agent));
+  const agents = readAgents();
+  for (const agent of agents) writeFile(path.join(out, 'agents', `${agent.name}.md`), agentFile(agent));
   for (const skill of readSkills()) fs.cpSync(skill.dir, path.join(out, 'skills', skill.name), { recursive: true });
-  fs.cpSync(path.join(REPO, 'hooks'), path.join(out, 'hooks'), { recursive: true });
+
+  copyHookScripts(path.join(out, 'hooks'));
+  writeFile(path.join(out, 'hooks', 'checkers.json'), json(agents.filter(agent => agent.role === 'checker').map(agent => agent.name)));
+  writeFile(path.join(out, 'hooks', 'hooks.json'), json({ hooks: claudeHooks() }));
+}
+
+// hooks.json in exec form (`node <script>`): no shell, so it runs the same on every OS.
+function claudeHooks() {
+  const byEvent = {};
+  for (const hook of readHooks().filter(hook => hook.claude)) {
+    const { event, matcher, timeout } = hook.claude;
+    const entry = {
+      ...(matcher ? { matcher } : {}),
+      hooks: [{ type: 'command', command: 'node', args: [`\${CLAUDE_PLUGIN_ROOT}/hooks/${hook.script}`, '--tool', 'claude'], timeout }],
+    };
+    (byEvent[event] ??= []).push(entry);
+  }
+  return byEvent;
 }

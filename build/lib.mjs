@@ -114,3 +114,15 @@ export function writeFile(file, content) {
 }
 
 export const json = value => JSON.stringify(value, null, 2) + '\n';
+
+// Hooks: neutral registry (hooks/registry.json) and the Node scripts it points to.
+export function readHooks() {
+  return JSON.parse(fs.readFileSync(path.join(REPO, 'hooks', 'registry.json'), 'utf8'));
+}
+
+export function copyHookScripts(outDir) {
+  const src = path.join(REPO, 'hooks');
+  for (const name of fs.readdirSync(src).filter(name => name.endsWith('.mjs'))) {
+    writeFile(path.join(outDir, name), fs.readFileSync(path.join(src, name)));
+  }
+}
