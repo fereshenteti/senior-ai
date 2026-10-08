@@ -51,6 +51,9 @@ export function createFileOps({ stateDir, mode, dryRun }) {
   const backupRoot = path.join(stateDir, 'backups', timestamp());
   let currentTool = '';
   let warnedFileLinks = false;
+  // In a dry run nothing is deleted, so remember what a real run would have removed by now.
+  const removedInDryRun = new Set();
+  const present = p => exists(p) && !removedInDryRun.has(p);
 
   const manifest = tool => path.join(stateDir, `${tool}.manifest`);
 
@@ -118,7 +121,7 @@ export function createFileOps({ stateDir, mode, dryRun }) {
   // place(src, dest, how): link (or copy) src to dest, backing up whatever is there.
   function place(src, dest, how = mode) {
     let backup = previousBackup(dest);
-    if (exists(dest)) {
+    if (present(dest)) {
       backup = backupPath(dest);
       run(`move ${pretty(dest)} → ${pretty(backup)}`, () => move(dest, backup));
       say(`  backed up existing ${pretty(dest)} → ${pretty(backup)}`);
@@ -191,7 +194,10 @@ export function createFileOps({ stateDir, mode, dryRun }) {
         else uninstallEntry?.(kind, entryTarget(entry.dest), entry.backup);
         continue;
       }
-      if (exists(entry.dest)) run(`delete ${pretty(entry.dest)}`, () => fs.rmSync(entry.dest, { recursive: true, force: true }));
+      if (present(entry.dest)) {
+        run(`delete ${pretty(entry.dest)}`, () => fs.rmSync(entry.dest, { recursive: true, force: true }));
+        if (dryRun) removedInDryRun.add(entry.dest);
+      }
       if (restore && entry.backup && exists(entry.backup)) {
         run(`move ${pretty(entry.backup)} → ${pretty(entry.dest)}`, () => move(entry.backup, entry.dest));
         say(`  restored ${pretty(entry.dest)}`);
