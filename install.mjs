@@ -23,7 +23,7 @@ const MARKS = {
 const MARKETPLACE = 'feres';
 const PLUGIN = `senior-ai@${MARKETPLACE}`;
 const GITHUB_REPO = 'fereshenteti/senior-ai';
-const INSTALL_COMMAND = IS_WINDOWS ? 'install.cmd' : './install.sh';
+const INSTALL_COMMAND = IS_WINDOWS ? '.\\install.cmd' : './install.sh';
 const BACKUP_ROOT = path.join(STATE_DIR, 'backups', timestamp());
 
 const USAGE = `Usage: ${INSTALL_COMMAND} [--tool vibe|claude|both] [--link] [--uninstall] [--dry-run]

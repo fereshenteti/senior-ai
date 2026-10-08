@@ -66,7 +66,7 @@ function vibeUpdateCommand() {
     source = readText(path.join(HERE, 'SOURCE'));
   } catch {}
   return IS_WINDOWS
-    ? `in "${source}" run: git pull, then install.cmd --tool vibe`
+    ? `in "${source}" run: git pull, then .\\install.cmd --tool vibe`
     : `run: cd "${source}" && git pull && ./install.sh --tool vibe`;
 }
 

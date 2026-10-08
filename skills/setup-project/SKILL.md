@@ -19,7 +19,7 @@ It is safe to re-run. It merges into existing files and never overwrites them:
 - `.gitignore`: ignores `.visual-check/`.
 - Claude Code only: `.claude/settings.json` enables `senior-ai@feres` for everyone who trusts the folder, and `CLAUDE.md` imports `AGENTS.md`.
 
-Vibe has no per-project install: each Vibe user installs senior-ai once from the senior-ai repo with `./install.sh --tool vibe` (macOS/Linux) or `install.cmd --tool vibe` (Windows).
+Vibe has no per-project install: each Vibe user installs senior-ai once from the senior-ai repo with `./install.sh --tool vibe` (macOS/Linux) or `.\install.cmd --tool vibe` (Windows).
 
 ## 3. Fill in the project AGENTS.md
 Replace every `<placeholder>` with facts you verify in the project, and leave nothing guessed:
