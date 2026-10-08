@@ -26,14 +26,13 @@ function localBin(root, name) {
   return fs.existsSync(bin) ? bin : null;
 }
 
+// On Windows the local binaries are .cmd shims, which only start through a shell: pass one quoted
+// command line (an argument list with `shell: true` triggers Node's DEP0190 warning).
 function run(bin, args, cwd) {
-  const quoted = process.platform === 'win32' ? args.map(arg => `"${arg}"`) : args;
-  return spawnSync(process.platform === 'win32' ? `"${bin}"` : bin, quoted, {
-    cwd,
-    encoding: 'utf8',
-    timeout: 30_000,
-    shell: process.platform === 'win32',
-  });
+  const options = { cwd, encoding: 'utf8', timeout: 30_000 };
+  if (process.platform !== 'win32') return spawnSync(bin, args, options);
+  const line = [bin, ...args].map(arg => `"${arg.replace(/"/g, '\\"')}"`).join(' ');
+  return spawnSync(line, { ...options, shell: true });
 }
 
 await runHook(() => {

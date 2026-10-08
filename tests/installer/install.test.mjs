@@ -76,6 +76,8 @@ test('installs everything for both tools with --yes', () => {
   assert.match(calls, /plugin install playwright@claude-plugins-official/);
   assert.match(calls, /mcp add --scope user angular-cli/);
   assert.match(result.stdout, /Summary/);
+  // Node 24+ warns (DEP0190) when an argument list is passed with shell: true (the Windows path).
+  assert.doesNotMatch(result.stderr, /DEP0190|DeprecationWarning/);
 });
 
 test('re-installing keeps the extras and does not duplicate anything', () => {

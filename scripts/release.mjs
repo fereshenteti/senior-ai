@@ -3,10 +3,10 @@
 // and validates the Claude plugin. Commit and push afterwards.
 //   node scripts/release.mjs 1.2.0
 
-import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnPortable } from '../installer/run.mjs';
 
 const REPO = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const version = process.argv[2] ?? '';
@@ -22,7 +22,7 @@ fs.writeFileSync(metaFile, JSON.stringify(meta, null, 2) + '\n');
 console.log(`Version set to ${version} in senior-ai.json`);
 
 const run = (command, args) => {
-  const result = spawnSync(command, args, { cwd: REPO, stdio: 'inherit', shell: process.platform === 'win32' });
+  const result = spawnPortable(command, args, { cwd: REPO, stdio: 'inherit' });
   if (result.status !== 0) process.exit(result.status ?? 1);
 };
 run(process.execPath, [path.join(REPO, 'build', 'index.mjs')]);

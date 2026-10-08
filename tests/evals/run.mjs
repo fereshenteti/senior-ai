@@ -11,6 +11,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnPortable } from '../../installer/run.mjs';
 
 const REPO = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const FIXTURE = path.join(REPO, 'tests', 'fixtures', 'sample-app');
@@ -248,10 +249,10 @@ const TOOL = toolIndex === -1 ? 'claude' : args.splice(toolIndex, 2)[1];
 const wanted = args;
 
 function runClaude(scenario, dir) {
-  const run = spawnSync(
+  const run = spawnPortable(
     'claude',
     ['-p', '--plugin-dir', PLUGIN, '--agent', scenario.agent, '--permission-mode', 'bypassPermissions', '--output-format', 'stream-json', '--verbose', scenario.prompt],
-    { cwd: dir, encoding: 'utf8', timeout: 30 * 60_000, maxBuffer: 256 * 1024 * 1024, shell: process.platform === 'win32' },
+    { cwd: dir, encoding: 'utf8', timeout: 30 * 60_000, maxBuffer: 256 * 1024 * 1024 },
   );
   const found = delegations(run.stdout ?? '');
   return { stream: run.stdout ?? '', list: [...found], cost: found.cost, report: found.report };
@@ -262,12 +263,11 @@ function runClaude(scenario, dir) {
 function runVibe(scenario, dir) {
   const agent = scenario.agent.replace(/^senior-ai:/, '');
   const prompt = agent === 'orchestrator' ? scenario.prompt : `Use the ${agent} subagent for this, then give me its full report unchanged: ${scenario.prompt}`;
-  const run = spawnSync('vibe', ['-p', prompt, '--agent', 'orchestrator', '--trust', '--auto-approve', '--max-turns', '40', '--output', 'streaming'], {
+  const run = spawnPortable('vibe', ['-p', prompt, '--agent', 'orchestrator', '--trust', '--auto-approve', '--max-turns', '40', '--output', 'streaming'], {
     cwd: dir,
     encoding: 'utf8',
     timeout: 30 * 60_000,
     maxBuffer: 256 * 1024 * 1024,
-    shell: process.platform === 'win32',
   });
   const events = (run.stdout ?? '').split('\n').flatMap(line => {
     try {
