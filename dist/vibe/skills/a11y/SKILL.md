@@ -50,4 +50,4 @@ user-invocable: true
 5. **Zoom/reflow:** 200% zoom and 320px viewport.
 
 ## Report format
-For each issue: `file:line` or story, WCAG criterion (e.g. 1.4.3 Contrast), impact on users, and a concrete fix. Group by Blocker / Major / Minor (same scale as `code-review-standards`).
+Start with the `review-loop` verdict line (`Verdict: PASS` or `Verdict: FAIL`). Then, for each issue: `file:line` or story, WCAG criterion (e.g. 1.4.3 Contrast), impact on users, and a concrete fix. Group by Blocker / Major / Minor (same scale as `code-review-standards`).

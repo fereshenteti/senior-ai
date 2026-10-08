@@ -22,8 +22,8 @@ Load each when its topic comes up; don't load everything up front.
 6. **Verify.**
    - Build/type-check and run the component's tests.
    - Run the visual check and iterate until it passes (max 5 rounds).
-   - Delegate reviews when you can: `visual-reviewer` (rendered vs. reference), `a11y-auditor`, `code-auditor`. Choose the model for each delegation as the global rules describe (a mid-tier model fits these reviews). Fix Blocker and Major findings. If you cannot delegate, apply the `a11y` and `code-review-standards` skills yourself.
-7. **Report:** files created/changed, visual-check result, review results, deviations from the design, missing tokens, and anything the user should decide.
+   - Run the `review-loop` skill with `visual-reviewer` (rendered vs. reference), `a11y-auditor` and `code-auditor` as checkers (a mid-tier model fits these reviews): fix their Blocker and Major findings and re-check, at most 3 rounds, then escalate what is left. If you cannot delegate, apply the `a11y` and `code-review-standards` skills yourself.
+7. **Report:** files created/changed, visual-check result, review rounds and final verdicts, deviations from the design, missing tokens, and anything the user should decide.
 
 ## Rules
 - One component per task unless told otherwise. Build bottom-up: primitives before composites.

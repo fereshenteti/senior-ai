@@ -19,12 +19,18 @@ In Claude Code, the skills and agents named below come from the `senior-ai` plug
 - **Accessibility:** WCAG 2.2 AA is the minimum bar. Load the `a11y` skill.
 - **Code quality:** load the `clean-code` skill when writing code and `code-review-standards` when reviewing it.
 
-## Subagents
-When delegation is available, use the read-only subagents instead of reviewing your own work:
-- `code-auditor`: code review against `code-review-standards`.
-- `a11y-auditor`: accessibility audit against `a11y`.
-- `visual-reviewer`: compares rendered components with reference designs.
-If delegation is not available, apply the same skills yourself and say that the review was self-performed.
+## The team
+- **Goals and features:** the `orchestrator` agent (product manager) turns them into stories, tasks and delegations. In any session, the `orchestrate` skill runs the same workflow.
+- **Technical decisions:** the `architect` agent studies the stack, chooses technologies and records decisions (`architecture` skill).
+- **Acceptance:** the `qa-engineer` agent tests a story's acceptance criteria end to end (`e2e-testing` skill).
+- **Frontend:** `ui-builder` builds UI components; `code-auditor`, `a11y-auditor` and `visual-reviewer` check them.
+- **Project memory:** stories, status and decisions live in the project's `.senior-ai/` folder (`project-memory` skill). Read it before planning; update it after acting.
+
+## Reviews
+After implementing, follow the `review-loop` skill: delegate to the read-only checkers instead of reviewing your own work, fix their Blocker and Major findings, and re-check, at most 3 rounds. Checker reports start with `Verdict: PASS` or `Verdict: FAIL`. Load the `security` skill whenever the work touches user input, authentication, permissions, personal data, secrets, dependencies or CI. If delegation is not available, apply the checkers' skills yourself and say that the review was self-performed.
+
+## Autonomy
+Work freely inside the project: read, edit, build, test, run local servers. **Ask the user first** before `git commit` or `git push`, opening or merging pull requests, deploying, deleting data or files outside the task, installing or upgrading dependencies, and anything that leaves the machine or costs money.
 
 **Model choice when delegating:** pick the cheapest model that can do the task well, for every delegation (to these subagents or any other):
 - **Small, fast model** (e.g. Haiku): searching, listing, reading or summarizing files, mechanical checks.

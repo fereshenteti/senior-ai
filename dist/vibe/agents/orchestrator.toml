@@ -1,0 +1,3 @@
+# Generated from departments/core/agents/orchestrator.md; edit that file, not this one.
+# Main agent: pick it with Shift+Tab, or start with `vibe --agent orchestrator`
+system_prompt_id = "orchestrator"

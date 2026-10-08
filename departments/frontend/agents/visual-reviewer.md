@@ -25,7 +25,8 @@ Load the `design-fidelity` and `visual-check` skills.
 
 ## Report
 ```
-Visual review: <component>, PASS/FAIL, <mismatch %>
+Verdict: PASS | FAIL
+Visual review: <component>, <mismatch %>
 1. <state/region>: expected <x>, rendered <y>. Cause: `file.scss:12` uses <...>; use <token>.
 ...
 Design conflicts: <reference vs. token disagreements>

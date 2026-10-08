@@ -1,6 +1,6 @@
 ---
 name: code-review-standards
-description: How to review code - scope, method, severity levels and report format, with language and framework checklists (Angular, TypeScript, SCSS, security). Use when reviewing a diff, branch, PR or files.
+description: How to review code - scope, method, severity levels and report format, with language and framework checklists (Angular, TypeScript, SCSS) and the security skill. Use when reviewing a diff, branch, PR or files.
 user-invocable: true
 ---
 
@@ -18,7 +18,7 @@ user-invocable: true
    - `references/typescript.md` for any `.ts` file
    - `references/angular.md` for Angular code
    - `references/scss.md` for styles
-   - `references/security.md` when the change touches input handling, auth, HTML rendering, HTTP, storage or dependencies
+   - the `security` skill (its frontend, backend or infra checklist) when the change touches input handling, auth, permissions, HTML rendering, HTTP, storage, secrets, dependencies or CI
    - For UI changes, accessibility is covered by the `a11y` skill.
 4. Verify each finding before reporting it: point at the exact line and explain the concrete failure (input → wrong result). Drop findings you cannot justify.
 5. If available, run the project's lint, type-check and tests on the changed area and include failures.
@@ -35,8 +35,8 @@ Do not inflate severity. Prefer few verified findings over many speculative ones
 
 ## 4. Report format
 ```
+Verdict: PASS | FAIL
 ## Review: <scope>
-Verdict: approve | approve with changes | request changes
 
 ### Blocker
 - `path/file.ts:42`: <what is wrong>. <concrete failure scenario>. Fix: <specific suggestion>.
@@ -47,4 +47,4 @@ Verdict: approve | approve with changes | request changes
 ### Good
 - <1-3 things done well, only if genuinely notable>
 ```
-Read-only by default: report, do not edit files unless asked to apply fixes.
+The first line is the `review-loop` verdict: FAIL when there is any Blocker or Major finding. Read-only by default: report, do not edit files unless asked to apply fixes.

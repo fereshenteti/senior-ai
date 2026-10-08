@@ -1,4 +1,4 @@
-# Security checklist (frontend focus)
+# Security checklist: frontend
 
 - [ ] No `innerHTML`, `bypassSecurityTrust*` or `DomSanitizer` bypass on data that is not fully trusted.
 - [ ] No secrets, API keys or tokens in source code, environment files committed to git, or Storybook stories.
