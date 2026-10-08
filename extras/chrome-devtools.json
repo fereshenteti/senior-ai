@@ -1,0 +1,10 @@
+{
+  "id": "chrome-devtools",
+  "name": "Chrome DevTools",
+  "purpose": "Inspect a live Chrome: performance traces, console, network, for debugging and performance audits",
+  "departments": ["frontend"],
+  "account": "none",
+  "detect": ["chrome-devtools"],
+  "claude": { "plugin": "chrome-devtools-mcp@claude-plugins-official" },
+  "mcp": { "transport": "stdio", "command": "npx", "args": ["-y", "chrome-devtools-mcp@latest"] }
+}

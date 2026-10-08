@@ -1,0 +1,16 @@
+{
+  "id": "github",
+  "name": "GitHub",
+  "purpose": "Issues, pull requests and repository data for the product manager and DevOps",
+  "departments": ["core", "devops"],
+  "account": "token",
+  "detect": ["github"],
+  "claude": { "plugin": "github@claude-plugins-official" },
+  "mcp": {
+    "transport": "streamable-http",
+    "url": "https://api.githubcopilot.com/mcp/",
+    "tokenEnv": "GITHUB_PERSONAL_ACCESS_TOKEN",
+    "tokenFormat": "Bearer {token}"
+  },
+  "setup": "Create a fine-grained personal access token at https://github.com/settings/personal-access-tokens and set it in the GITHUB_PERSONAL_ACCESS_TOKEN environment variable (in your shell profile, or in Windows' environment variables). senior-ai never stores it."
+}

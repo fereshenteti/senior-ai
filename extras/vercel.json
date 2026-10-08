@@ -1,0 +1,12 @@
+{
+  "id": "vercel",
+  "name": "Vercel",
+  "purpose": "Deployments, build logs, domains and environment variables on Vercel",
+  "departments": ["devops"],
+  "account": "login",
+  "detect": ["vercel"],
+  "claude": { "plugin": "vercel@claude-plugins-official" },
+  "mcp": { "transport": "streamable-http", "url": "https://mcp.vercel.com", "oauth": true },
+  "fallbackSkill": "vercel",
+  "setup": "Log in with your Vercel account the first time an agent uses it."
+}

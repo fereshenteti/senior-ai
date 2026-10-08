@@ -1,0 +1,11 @@
+{
+  "id": "figma",
+  "name": "Figma",
+  "purpose": "Read designs, components and variables from Figma as the design source",
+  "departments": ["frontend"],
+  "account": "login",
+  "detect": ["figma"],
+  "claude": { "plugin": "figma@claude-plugins-official" },
+  "mcp": { "transport": "streamable-http", "url": "https://mcp.figma.com/mcp", "oauth": true },
+  "setup": "Log in with your Figma account the first time an agent uses it."
+}

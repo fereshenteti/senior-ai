@@ -1,0 +1,9 @@
+{
+  "id": "angular-cli",
+  "name": "Angular CLI",
+  "purpose": "Official Angular best practices and documentation search for the project's Angular version",
+  "departments": ["frontend"],
+  "account": "none",
+  "detect": ["angular-cli", "angular"],
+  "mcp": { "name": "angular-cli", "transport": "stdio", "command": "npx", "args": ["-y", "@angular/cli", "mcp"] }
+}

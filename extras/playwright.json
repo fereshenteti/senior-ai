@@ -1,0 +1,10 @@
+{
+  "id": "playwright",
+  "name": "Playwright",
+  "purpose": "Drive a real browser: end-to-end tests (QA) and screenshots for visual review",
+  "departments": ["core", "frontend"],
+  "account": "none",
+  "detect": ["playwright"],
+  "claude": { "plugin": "playwright@claude-plugins-official" },
+  "mcp": { "transport": "stdio", "command": "npx", "args": ["-y", "@playwright/mcp@latest"] }
+}

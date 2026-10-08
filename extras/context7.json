@@ -1,0 +1,10 @@
+{
+  "id": "context7",
+  "name": "Context7",
+  "purpose": "Up-to-date documentation for libraries and frameworks, so agents don't rely on outdated knowledge",
+  "departments": ["core"],
+  "account": "none",
+  "detect": ["context7"],
+  "claude": { "plugin": "context7@claude-plugins-official" },
+  "mcp": { "transport": "streamable-http", "url": "https://mcp.context7.com/mcp" }
+}
