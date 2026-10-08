@@ -17,8 +17,11 @@ git clone https://github.com/fereshenteti/senior-ai.git ~/senior-ai && cd ~/seni
 
 | Tool | What the installer does | Updates |
 |---|---|---|
-| Claude Code | Installs the `senior-ai@feres` plugin from GitHub (with `--link`: from this folder). Rules are injected at session start; skills and agents are `senior-ai:<name>`. | `claude plugin marketplace update feres` |
-| Mistral Vibe | Copies skills, prompts, agents and rules into `~/.vibe` (with `--link`: symlinks to this folder). Existing files are moved to `~/.senior-ai/backups/` and restored on `--uninstall`; your own `~/.vibe/AGENTS.md` gets a marked block instead of being replaced. | `git pull`, then re-run `./install.sh` (automatic with `--link`) |
+| Claude Code | Installs the `senior-ai@feres` plugin from GitHub (with `--link`: from this folder). Rules are injected at session start; skills and agents are `senior-ai:<name>`. | `claude plugin update senior-ai@feres` |
+| Mistral Vibe | Copies skills, prompts, agents and rules into `~/.vibe` (with `--link`: symlinks to this folder). Existing files are moved to `~/.senior-ai/backups/` and restored on `--uninstall`; your own `~/.vibe/AGENTS.md` gets a marked block instead of being replaced. | `git pull`, then re-run `./install.sh --tool vibe` |
+
+Updates are never installed automatically. While GitHub has a newer version, each new session tells you and shows the command to run:
+Claude Code when the session starts, Vibe after its first answer. GitHub is checked at most once a day.
 
 Claude Code only, without cloning:
 ```bash
@@ -87,4 +90,4 @@ The `ui-builder` agent implements the component with tokens, writes its Storyboo
 - One skill per folder directly under `skills/`; Vibe does not discover nested skill folders.
 - Add a new agent: write `prompts/<name>.md`, then `adapters/vibe/agents/<name>.toml` and `adapters/claude/agents/<name>.md` (frontmatter only).
 - After changing `prompts/` or `adapters/claude/agents/`, run `scripts/build-claude-agents.sh` and commit the generated `agents/`.
-- Releasing for Claude Code: `scripts/release.sh <version>` (e.g. `1.2.0`) sets the version in both `.claude-plugin/` manifests, rebuilds `agents/` and validates the plugin; then commit, push, and run `claude plugin marketplace update feres` on each machine. Test unpushed changes with `claude --plugin-dir .`.
+- Releasing for Claude Code: `scripts/release.sh <version>` (e.g. `1.2.0`) sets the version in both `.claude-plugin/` manifests, rebuilds `agents/` and validates the plugin; then commit and push. Every machine is told about the new version and how to update. Test unpushed changes with `claude --plugin-dir .`.

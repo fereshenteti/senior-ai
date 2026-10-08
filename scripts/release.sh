@@ -33,5 +33,5 @@ cat <<MSG
 
 Next:
   git commit -am "Release $VERSION" && git push
-  claude plugin marketplace update feres    # on each machine
+Each machine is then told about $VERSION within a day and shown how to update.
 MSG

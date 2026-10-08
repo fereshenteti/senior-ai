@@ -9,6 +9,8 @@ STATE_DIR="${SENIOR_AI_STATE_DIR:-$HOME/.senior-ai}"
 VIBE_DIR="${SENIOR_AI_VIBE_DIR:-$HOME/.vibe}"
 MARK_START='<!-- senior-ai:start -->'
 MARK_END='<!-- senior-ai:end -->'
+TOML_MARK_START='# senior-ai:start'
+TOML_MARK_END='# senior-ai:end'
 MARKETPLACE="feres"
 PLUGIN="senior-ai@$MARKETPLACE"
 GITHUB_REPO="fereshenteti/senior-ai"
@@ -170,7 +172,7 @@ add_block() {
     cat "$content"
     echo "$MARK_END"
   } >> "$file"
-  record "block:$file" "$created"
+  record "${BLOCK_KIND:-block}:$file" "$created"
 }
 
 remove_block() {
@@ -192,6 +194,7 @@ remove_installed() {
     [ -n "$dest" ] || continue
     case "$dest" in
       block:*) remove_block "${dest#block:}" "$backup"; continue ;;
+      tomlblock:*) MARK_START="$TOML_MARK_START" MARK_END="$TOML_MARK_END" remove_block "${dest#tomlblock:}" "$backup"; continue ;;
       plugin:*) remove_plugin; continue ;;
     esac
     if [ -e "$dest" ] || [ -L "$dest" ]; then
@@ -210,7 +213,7 @@ restore_orphans() {
   prev="$(manifest "$CURRENT_TOOL").prev"
   [ -f "$prev" ] || return 0
   while IFS="$(printf '\t')" read -r dest backup; do
-    case "$dest" in block:*|plugin:*|"") continue ;; esac
+    case "$dest" in block:*|tomlblock:*|plugin:*|"") continue ;; esac
     if [ -n "$backup" ] && [ -e "$backup" ] && [ ! -e "$dest" ] && [ ! -L "$dest" ]; then
       run mv "$backup" "$dest"
       say "  restored $(pretty "$dest") (no longer provided by senior-ai)"
@@ -262,8 +265,30 @@ install_vibe() {
   else
     place "$REPO/AGENTS.md" "$agents"
   fi
+
+  # Update notice: a post_agent hook that tells the user when GitHub has a newer version.
+  local notice_dir="$VIBE_DIR/senior-ai" tmpdir
+  tmpdir="$(mktemp -d)"
+  json_field version < "$REPO/.claude-plugin/plugin.json" > "$tmpdir/VERSION"
+  echo "$REPO" > "$tmpdir/SOURCE"
+  cat > "$tmpdir/hooks.toml" <<TOML
+[[hooks]]
+name = "senior-ai-update-check"
+type = "post_agent"
+command = "bash '$notice_dir/check-update.sh' --tool vibe"
+timeout = 10.0
+description = "Tell the user when a newer senior-ai version is available."
+TOML
+  place "$REPO/hooks/check-update.sh" "$notice_dir/check-update.sh" copy
+  place "$tmpdir/VERSION" "$notice_dir/VERSION" copy
+  place "$tmpdir/SOURCE" "$notice_dir/SOURCE" copy
+  BLOCK_KIND=tomlblock MARK_START="$TOML_MARK_START" MARK_END="$TOML_MARK_END" \
+    add_block "$VIBE_DIR/hooks.toml" "$tmpdir/hooks.toml"
+  rm -rf "$tmpdir"
   restore_orphans
 }
+
+json_field() { sed -n "s/.*\"$1\"[[:space:]]*:[[:space:]]*\"\([^\"]*\)\".*/\\1/p" | head -1; }
 
 claude_cli() {
   command -v claude >/dev/null 2>&1 || die "the 'claude' CLI is not on your PATH; install Claude Code first."
@@ -301,7 +326,7 @@ next_steps() {
     *" claude "*)
       say "  Claude: add MCP servers with the commands in adapters/claude/mcp.md,"
       say "          then start with: claude --agent senior-ai:ui-builder"
-      say "          Updates: claude plugin marketplace update $MARKETPLACE" ;;
+      say "          Updates: claude plugin update $PLUGIN (you are told when one is available)" ;;
   esac
   say "  Per project: run /senior-ai:setup-project (Claude Code) or the setup-project skill (Vibe) from the project root."
   case " $TOOLS " in
