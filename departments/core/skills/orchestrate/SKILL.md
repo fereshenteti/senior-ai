@@ -29,7 +29,7 @@ Add a task table to the story. One task = one agent, one deliverable, reviewable
 |---|---|---|---|---|---|---|
 
 - Pick agents from the routing table below. When a department has no agent yet, the task goes to you (do it yourself following that department's skills) or to the user; say which.
-- Checkers come from the same department plus security when the task touches input handling, authentication, data exposure or secrets.
+- Checkers come from the same department, plus its security checker (`frontend-security` for frontend) when the task touches input handling, authentication, tokens, HTML rendering, data exposure or secrets, and `perf-auditor` when it adds routes, large lists, images or heavy dependencies.
 - "Done when" points at acceptance criteria or a concrete check (tests pass, visual check passes, review verdict PASS).
 
 ## 5. Dispatch
@@ -54,6 +54,6 @@ Tell the user, briefly: what was built, how it was verified (tests, reviews, QA)
 | Department | Makers | Checkers |
 |---|---|---|
 | Core | `architect` (technical approach, ADRs), `qa-engineer` (end-to-end tests) | `qa-engineer` (acceptance) |
-| Frontend | `ui-builder` (UI components from a design) | `code-auditor`, `a11y-auditor`, `visual-reviewer` |
+| Frontend | `ui-builder` (UI components from a design), `frontend-dev` (pages, routing, forms, state, data, services), `i18n-specialist` (translatable text, languages, locale formatting) | `code-auditor`, `a11y-auditor`, `visual-reviewer`, `perf-auditor`, `frontend-security` |
 
 Departments still being built (backend, DevOps): handle their tasks yourself with the matching skills, or ask the user.

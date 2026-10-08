@@ -21,6 +21,18 @@ const glob = (dir, sub, pattern) =>
   fs.existsSync(path.join(dir, sub)) ? fs.readdirSync(path.join(dir, sub)).filter(name => pattern.test(name)).map(name => path.join(sub, name)) : [];
 const testsPass = dir => spawnSync(process.execPath, ['--test'], { cwd: dir, encoding: 'utf8' }).status === 0;
 
+// Plants a problem in the copied app: replaces `from` with `to` in a file.
+function plant(dir, file, from, to) {
+  const full = path.join(dir, file);
+  const text = fs.readFileSync(full, 'utf8');
+  if (!text.includes(from)) throw new Error(`cannot plant in ${file}: anchor not found`);
+  fs.writeFileSync(full, text.replace(from, to));
+}
+
+const RENDER_SAFE = "list.replaceChildren(...notes.map(note => Object.assign(document.createElement('li'), { textContent: note.title })));";
+const unchanged = dir => spawnSync('git', ['diff', '--quiet'], { cwd: dir }).status === 0;
+const verdict = report => /Verdict:\s*(PASS|FAIL)/.exec(report)?.[1];
+
 const SCENARIOS = {
   orchestrator: {
     agent: 'senior-ai:orchestrator',
@@ -41,6 +53,38 @@ const SCENARIOS = {
       ];
     },
   },
+  'frontend-security': {
+    agent: 'senior-ai:frontend-security',
+    setup: dir => plant(dir, 'public/app.js', RENDER_SAFE, "list.innerHTML = notes.map(note => `<li>${note.title}</li>`).join('');"),
+    prompt: `Review the frontend code in public/ for security issues. ${NON_INTERACTIVE}`,
+    checks: (dir, report) => [
+      ['the verdict is FAIL', verdict(report) === 'FAIL'],
+      ['the XSS through innerHTML is found', /innerHTML/.test(report) && /XSS|cross-site scripting/i.test(report)],
+      ['it is rated Blocker or Major', /Blocker|Major/.test(report)],
+      ['no project file was modified (read-only)', unchanged(dir)],
+    ],
+  },
+  'perf-auditor': {
+    agent: 'senior-ai:perf-auditor',
+    setup: dir =>
+      plant(
+        dir,
+        'public/app.js',
+        RENDER_SAFE,
+        `${RENDER_SAFE}
+  // Recompute every note's layout one by one.
+  for (const item of list.children) item.style.width = list.offsetWidth - item.offsetLeft + 'px';
+  const start = Date.now();
+  while (Date.now() - start < 1500) Math.sqrt(Math.random()); // warm-up`,
+      ),
+    prompt: `Audit the performance of the notes page (public/). ${NON_INTERACTIVE}`,
+    checks: (dir, report) => [
+      ['the verdict is FAIL', verdict(report) === 'FAIL'],
+      ['the main-thread block is found', /main[- ]thread|long task|block|busy|while/i.test(report) && /1[.,]?5\s?s|1500/.test(report)],
+      ['the layout thrashing is found', /layout|reflow|thrash|offsetWidth|offsetLeft/i.test(report)],
+      ['no project file was modified (read-only)', unchanged(dir)],
+    ],
+  },
   architect: {
     agent: 'senior-ai:architect',
     prompt: `Notes are lost when the server restarts. Choose how to persist them for a small team app, record the decision, and document the architecture. ${NON_INTERACTIVE}`,
@@ -58,9 +102,10 @@ const SCENARIOS = {
   },
 };
 
-function prepareProject() {
+function prepareProject(setup) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'senior-ai-eval-'));
   fs.cpSync(FIXTURE, dir, { recursive: true });
+  setup?.(dir);
   const git = args => spawnSync('git', args, { cwd: dir, encoding: 'utf8' });
   git(['init', '-q']);
   git(['add', '-A']);
@@ -83,7 +128,10 @@ function delegations(stream) {
         found.push(`${part.input.subagent_type ?? 'general'} (${part.input.model ?? 'default model'})`);
       }
     }
-    if (event.type === 'result') found.cost = event.total_cost_usd;
+    if (event.type === 'result') {
+      found.cost = event.total_cost_usd;
+      found.report = event.result ?? '';
+    }
   }
   return found;
 }
@@ -92,18 +140,18 @@ const wanted = process.argv.slice(2);
 let failures = 0;
 for (const [name, scenario] of Object.entries(SCENARIOS)) {
   if (wanted.length && !wanted.includes(name)) continue;
-  const dir = prepareProject();
+  const dir = prepareProject(scenario.setup);
   console.log(`\n▶ ${name}  (${dir})`);
   const run = spawnSync(
     'claude',
     ['-p', '--plugin-dir', PLUGIN, '--agent', scenario.agent, '--permission-mode', 'bypassPermissions', '--output-format', 'stream-json', '--verbose', scenario.prompt],
     { cwd: dir, encoding: 'utf8', timeout: 30 * 60_000, maxBuffer: 256 * 1024 * 1024, shell: process.platform === 'win32' },
   );
-  fs.writeFileSync(path.join(dir, 'eval-transcript.jsonl'), run.stdout ?? '');
+  fs.writeFileSync(`${dir}.transcript.jsonl`, run.stdout ?? '');
   const used = delegations(run.stdout ?? '');
   console.log(`  delegations: ${used.length ? used.join(', ') : 'none'}`);
   if (used.cost !== undefined) console.log(`  cost: $${used.cost.toFixed(2)}`);
-  for (const [label, ok] of scenario.checks(dir)) {
+  for (const [label, ok] of scenario.checks(dir, used.report ?? '')) {
     console.log(`  ${ok ? '✓' : '✗'} ${label}`);
     if (!ok) failures++;
   }

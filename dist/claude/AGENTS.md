@@ -23,7 +23,7 @@ In Claude Code, the skills and agents named below come from the `senior-ai` plug
 - **Goals and features:** the `orchestrator` agent (product manager) turns them into stories, tasks and delegations. In any session, the `orchestrate` skill runs the same workflow.
 - **Technical decisions:** the `architect` agent studies the stack, chooses technologies and records decisions (`architecture` skill).
 - **Acceptance:** the `qa-engineer` agent tests a story's acceptance criteria end to end (`e2e-testing` skill).
-- **Frontend:** `ui-builder` builds UI components; `code-auditor`, `a11y-auditor` and `visual-reviewer` check them.
+- **Frontend:** `ui-builder` builds UI components from a design, `frontend-dev` builds pages, routing, forms, state and data access, `i18n-specialist` makes text translatable. `code-auditor`, `a11y-auditor`, `visual-reviewer`, `perf-auditor` and `frontend-security` check their work.
 - **Project memory:** stories, status and decisions live in the project's `.senior-ai/` folder (`project-memory` skill). Read it before planning; update it after acting.
 
 ## Reviews

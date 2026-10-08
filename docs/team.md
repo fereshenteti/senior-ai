@@ -9,10 +9,14 @@ senior-ai organizes agents into departments. **Makers** can edit files; **checke
 | Core | `orchestrator` | Product manager: stories, acceptance criteria, tasks, delegation, follow-up, report | `.senior-ai/` files | every agent |
 | Core | `architect` | Technology choices, decision records, architecture overview, technical approach | `.senior-ai/` documents | — |
 | Core | `qa-engineer` | End-to-end acceptance tests with Playwright, final checker of a story | test files | — |
-| Frontend | `ui-builder` | UI components from a design source, with Storybook stories | yes | the three frontend checkers |
-| Frontend | `code-auditor` | Code review (TypeScript, Angular, SCSS, security) | no | — |
+| Frontend | `ui-builder` | UI components from a design source, with Storybook stories | yes | frontend checkers |
+| Frontend | `frontend-dev` | Pages, routing, forms, state, data fetching, services, unit tests | yes | frontend checkers |
+| Frontend | `i18n-specialist` | Translatable text, ICU plurals, locale formatting, right-to-left, translation files | yes | frontend checkers |
+| Frontend | `code-auditor` | Code review (TypeScript, Angular, SCSS) | no | — |
 | Frontend | `a11y-auditor` | WCAG 2.2 AA accessibility audit | no | — |
 | Frontend | `visual-reviewer` | Rendered component vs. reference design image | no | — |
+| Frontend | `perf-auditor` | Core Web Vitals, bundle size, rendering, measured with Lighthouse and DevTools | no | — |
+| Frontend | `frontend-security` | XSS, unsafe HTML, token storage, redirects, third-party scripts, secrets in client code | no | — |
 
 Backend (NestJS, PostgreSQL) and DevOps (Docker, Vercel, CI) are the next departments. Until they exist, the orchestrator handles their tasks itself with the matching skills, or asks you.
 
@@ -61,6 +65,8 @@ Skills are instructions an agent loads when the topic comes up.
 | `storybook` | Stories, including the `AllStates` story |
 | `visual-check` | Pixel comparison of a story with its reference image |
 | `a11y` | WCAG 2.2 AA build rules and audit method |
+| `i18n` | Translatable text, ICU messages, locale formatting, right-to-left |
+| `web-performance` | Core Web Vitals, bundles, loading, images, rendering, measurement |
 
 ## Autonomy
 

@@ -22,10 +22,12 @@ You describe what you want; a product-manager agent turns it into user stories, 
 | | `architect` | Studies the stack, chooses technologies, records decisions (ADRs), defines the technical approach |
 | | `qa-engineer` | Turns acceptance criteria into Playwright end-to-end tests and reports pass or fail per criterion |
 | **Frontend** | `ui-builder` | Builds UI components pixel-perfectly from a design, with Storybook stories |
-| | `code-auditor`, `a11y-auditor`, `visual-reviewer` | Read-only reviewers: code quality, WCAG 2.2 AA accessibility, design fidelity |
+| | `frontend-dev` | Builds pages, routing, forms, state and data access, with unit tests |
+| | `i18n-specialist` | Makes text translatable: ICU plurals, locale formatting, right-to-left, translation files |
+| | `code-auditor`, `a11y-auditor`, `visual-reviewer`, `perf-auditor`, `frontend-security` | Read-only reviewers: code quality, WCAG 2.2 AA accessibility, design fidelity, performance, security |
 | **Backend**, **DevOps** | *coming next* | NestJS, PostgreSQL, Docker and Vercel |
 
-Plus 15 skills (Angular, SCSS, design tokens, Storybook, accessibility, security, architecture, end-to-end testing…), a project memory in `.senior-ai/`, safety hooks, and optional MCP integrations (Playwright, Context7, GitHub, Chrome DevTools, Angular CLI, Figma, Vercel). See [the team](docs/team.md).
+Plus 17 skills (Angular, SCSS, design tokens, Storybook, accessibility, i18n, web performance, security, architecture, end-to-end testing…), a project memory in `.senior-ai/`, safety hooks, and optional MCP integrations (Playwright, Context7, GitHub, Chrome DevTools, Angular CLI, Figma, Vercel). See [the team](docs/team.md).
 
 ---
 

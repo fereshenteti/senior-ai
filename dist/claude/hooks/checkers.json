@@ -1,5 +1,7 @@
 [
   "a11y-auditor",
   "code-auditor",
+  "frontend-security",
+  "perf-auditor",
   "visual-reviewer"
 ]
