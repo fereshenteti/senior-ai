@@ -8,7 +8,7 @@
     {
       "name": "senior-ai",
       "displayName": "Senior AI",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "description": "An AI engineering team for Claude Code and Mistral Vibe: product manager, architect, QA and frontend, backend and DevOps departments with review loops, hooks and MCP integrations.",
       "source": "./dist/claude"
     }
