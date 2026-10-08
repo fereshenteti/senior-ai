@@ -146,6 +146,50 @@ const SCENARIOS = {
       ['no project file was modified (read-only)', unchanged(dir)],
     ],
   },
+  'infra-reviewer': {
+    agent: 'senior-ai:infra-reviewer',
+    setup: dir => {
+      // A fake password, assembled at runtime so this repository holds no secret-shaped text.
+      const databaseUrl = 'postgres://app:' + 'n0tAr3alPassw0rd' + '@db:5432/notes';
+      fs.writeFileSync(
+        path.join(dir, 'Dockerfile'),
+        ['FROM node:latest', 'WORKDIR /app', 'COPY . .', `ENV DATABASE_URL=${databaseUrl}`, 'RUN npm install', 'EXPOSE 3000', 'CMD npm start', ''].join('\n'),
+      );
+      fs.mkdirSync(path.join(dir, '.github', 'workflows'), { recursive: true });
+      fs.writeFileSync(
+        path.join(dir, '.github', 'workflows', 'preview.yml'),
+        [
+          'name: Preview',
+          'on: pull_request_target',
+          'permissions: write-all',
+          'jobs:',
+          '  preview:',
+          '    runs-on: ubuntu-latest',
+          '    steps:',
+          '      - uses: actions/checkout@v5',
+          '        with:',
+          '          ref: ${{ github.event.pull_request.head.sha }}',
+          '      - run: npm ci && npm test',
+          '      - uses: some-org/deploy-preview-action@main',
+          '        with:',
+          '          token: ${{ secrets.VERCEL_TOKEN }}',
+          '      - run: echo "Preview for ${{ github.event.pull_request.title }}"',
+          '',
+        ].join('\n'),
+      );
+    },
+    prompt: `Review the new Dockerfile and .github/workflows/preview.yml before they are merged. This is a public repository that accepts pull requests from forks. ${NON_INTERACTIVE}`,
+    checks: (dir, report) => [
+      ['the verdict is FAIL', verdict(report) === 'FAIL'],
+      ['pull_request_target running PR code with secrets is found', /pull_request_target/.test(report)],
+      ['the secret in the Dockerfile is found', /DATABASE_URL|secret|password|credential/i.test(report) && /ENV|image|layer/i.test(report)],
+      ['the root user is found', /root|USER/.test(report)],
+      ['the unpinned base image or action is found', /latest|@main|pin|SHA/i.test(report)],
+      ['the PR title injection is found', /title/.test(report) && /inject/i.test(report)],
+      ['they include a Blocker', /Blocker/.test(report)],
+      ['no project file was modified (read-only)', unchanged(dir)],
+    ],
+  },
   architect: {
     agent: 'senior-ai:architect',
     prompt: `Notes are lost when the server restarts. Choose how to persist them for a small team app, record the decision, and document the architecture. ${NON_INTERACTIVE}`,

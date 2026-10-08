@@ -25,6 +25,7 @@ In Claude Code, the skills and agents named below come from the `senior-ai` plug
 - **Acceptance:** the `qa-engineer` agent tests a story's acceptance criteria end to end (`e2e-testing` skill).
 - **Frontend:** `ui-builder` builds UI components from a design, `frontend-dev` builds pages, routing, forms, state and data access, `i18n-specialist` makes text translatable. `code-auditor`, `a11y-auditor`, `visual-reviewer`, `perf-auditor` and `frontend-security` check their work.
 - **Backend:** `api-developer` builds endpoints, services and integrations, `db-engineer` designs schemas, migrations and queries. `backend-reviewer`, `db-reviewer` and `backend-security` check their work.
+- **DevOps:** `ci-engineer` builds CI/CD pipelines, `infra-engineer` containers, hosting and environments, `release-manager` prepares releases and deploys only with the user's approval. `infra-reviewer` checks their work; the `ci-watch` skill follows runs and deployments to the end.
 - **Project memory:** stories, status and decisions live in the project's `.senior-ai/` folder (`project-memory` skill). Read it before planning; update it after acting.
 
 ## Reviews

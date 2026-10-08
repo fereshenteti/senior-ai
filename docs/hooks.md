@@ -25,7 +25,7 @@ If one of these is really needed, run it yourself.
 
 ## Needs your approval (Claude Code asks; in Vibe, its own approval prompt does)
 
-`git commit`, `git push`, history rewrites (`git reset --hard`, `rebase`), opening, merging or closing pull requests, publishing packages, deploying (Vercel, Netlify, Fly, Firebase, Terraform, Kubernetes, Helm), pushing Docker images, installing or upgrading dependencies, running database migrations.
+`git commit`, `git push`, history rewrites (`git reset --hard`, `rebase`), opening, merging or closing pull requests, publishing packages, deploying (Vercel deploy, promote, rollback; Netlify, Fly, Firebase, Terraform, Kubernetes, Helm), changing production settings (Vercel environment variables, domains, DNS), pushing Docker images, installing or upgrading dependencies, running database migrations. Read-only commands such as `vercel inspect`, `vercel logs`, `vercel env ls` or `gh run watch` never ask.
 
 ## Format and lint
 

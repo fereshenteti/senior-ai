@@ -22,8 +22,12 @@ senior-ai organizes agents into departments. **Makers** can edit files; **checke
 | Backend | `backend-reviewer` | Backend code review: structure, API contracts, errors, transactions, tests | no | — |
 | Backend | `db-reviewer` | Schema, indexes, N+1 queries, migrations that lock, break code or lose data | no | — |
 | Backend | `backend-security` | Injection, authentication, object-level authorization (IDOR), data exposure, secrets | no | — |
+| DevOps | `ci-engineer` | GitHub Actions workflows: checks, builds, previews, releases; fixes failing pipelines | yes | `infra-reviewer` |
+| DevOps | `infra-engineer` | Dockerfiles, Compose, hosting configuration, environments and variables | yes | `infra-reviewer` |
+| DevOps | `release-manager` | Release preparation, changelog, deploy after your approval, verification, rollback | yes | — |
+| DevOps | `infra-reviewer` | Secrets, supply chain, containers, CI permissions and triggers, cloud configuration | no | — |
 
-DevOps (Docker, Vercel, CI) is the next department. Until it exists, the orchestrator handles its tasks itself with the matching skills, or asks you.
+Work that fits no agent is done by the orchestrator itself with the matching skills, or handed to you.
 
 ## How a goal flows
 
@@ -33,6 +37,7 @@ DevOps (Docker, Vercel, CI) is the next department. Until it exists, the orchest
 4. **Makers** build, then run the **review loop** with their checkers.
 5. **QA engineer** tests every acceptance criterion end to end.
 6. **Orchestrator** reports to you and updates the project memory.
+7. **Release manager** ships it when you ask: release plan with rollback, your approval, deployment, verification.
 
 ## The review loop
 
@@ -74,6 +79,10 @@ Skills are instructions an agent loads when the topic comes up.
 | `web-performance` | Core Web Vitals, bundles, loading, images, rendering, measurement |
 | `nestjs` | NestJS structure, validation, configuration, guards, errors, testing (version-aware) |
 | `postgresql` | Schema design, indexes, queries, safe migrations on live data |
+| `docker` | Small, secure, reproducible images and Compose setups |
+| `github-actions` | Fast, reliable and secure CI/CD workflows |
+| `vercel` | Deployments, environment variables, logs, promote and rollback (official plugin or CLI) |
+| `ci-watch` | Follow a CI run or deployment to the end, route failures, re-check |
 
 ## Autonomy
 

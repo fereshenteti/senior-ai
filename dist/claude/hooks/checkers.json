@@ -5,6 +5,7 @@
   "code-auditor",
   "db-reviewer",
   "frontend-security",
+  "infra-reviewer",
   "perf-auditor",
   "visual-reviewer"
 ]

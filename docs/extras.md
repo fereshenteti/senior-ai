@@ -21,7 +21,7 @@ For Claude Code, the official plugin from Anthropic's catalog is used when one e
 
 ## Without an extra
 
-Each agent falls back to what it can do without it: the architect reads the official documentation instead of Context7; QA asks before installing Playwright as a project dependency, or checks manually; Vercel work goes through the `vercel` CLI. Nothing breaks.
+Each agent falls back to what it can do without it: the architect reads the official documentation instead of Context7; QA asks before installing Playwright as a project dependency, or checks manually; Vercel work goes through the `vercel` CLI, guided by senior-ai's own `vercel` skill. Nothing breaks.
 
 ## Later
 

@@ -51,7 +51,9 @@ const NEEDS_APPROVAL = [
   ['rewrite git history', /\bgit\s+(?:reset\s+--hard|rebase\b|filter-branch|filter-repo|clean\s+-[a-zA-Z]*f)/],
   ['open, merge or close a pull request', /\bgh\s+pr\s+(?:create|merge|close)\b/],
   ['publish a package', /\b(?:npm|pnpm|yarn)\s+publish\b/],
-  ['deploy', /\b(?:vercel\b(?!\s+(?:login|logout|whoami|env\s+pull|link|dev|pull|inspect|logs|ls|list)\b)|netlify\s+deploy|fly\s+deploy|firebase\s+deploy|terraform\s+(?:apply|destroy)|kubectl\s+(?:apply|delete|rollout)|helm\s+(?:install|upgrade|uninstall))/],
+  // Bare `vercel` (with flags only) deploys; read-only subcommands (inspect, logs, ls, build, env ls…) don't ask.
+  ['deploy', /\bvercel(?:\s+-{1,2}[\w=.-]+)*\s*(?:$|[;&|])|\bvercel\s+(?:deploy|promote|rollback|redeploy|remove|rm|alias)\b|\b(?:netlify\s+deploy|fly\s+deploy|firebase\s+deploy|terraform\s+(?:apply|destroy)|kubectl\s+(?:apply|delete|rollout)|helm\s+(?:install|upgrade|uninstall))\b/],
+  ['change production settings (environment variables, domains, DNS)', /\bvercel\s+(?:env\s+(?:add|rm|remove|update)|domains\s+(?:add|rm|remove|move)|dns\s+(?:add|rm|remove))\b/],
   ['push an image', /\bdocker\s+push\b/],
   ['install or upgrade dependencies', /\b(?:npm\s+(?:i|install|add|update|upgrade)\s+\S|pnpm\s+(?:add|update|up)\b|yarn\s+(?:add|upgrade)\b|pip\s+install\s+(?!-r\b)\S|uv\s+add\b)/],
   ['run a database migration', /\b(?:prisma\s+migrate\s+(?:deploy|reset)|typeorm\s+migration:run|migrate\s+up)\b/],

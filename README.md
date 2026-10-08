@@ -28,9 +28,12 @@ You describe what you want; a product-manager agent turns it into user stories, 
 | **Backend** | `api-developer` | Builds endpoints, services and integrations, with unit and end-to-end tests |
 | | `db-engineer` | Designs schemas, writes migrations that are safe on live data, adds indexes, optimizes queries |
 | | `backend-reviewer`, `db-reviewer`, `backend-security` | Read-only reviewers: backend code, database changes, security |
-| **DevOps** | *coming next* | Docker, Vercel, CI |
+| **DevOps** | `ci-engineer` | Builds and fixes CI/CD pipelines (GitHub Actions) |
+| | `infra-engineer` | Containers (Docker, Compose), hosting configuration (Vercel…), environments |
+| | `release-manager` | Prepares releases with a rollback plan; deploys only after your approval, then verifies |
+| | `infra-reviewer` | Read-only reviewer: secrets, supply chain, containers, CI permissions, cloud configuration |
 
-Plus 19 skills (Angular, NestJS, PostgreSQL, SCSS, design tokens, Storybook, accessibility, i18n, web performance, security, architecture, end-to-end testing…), a project memory in `.senior-ai/`, safety hooks, and optional MCP integrations (Playwright, Context7, GitHub, Chrome DevTools, Angular CLI, Figma, Vercel). See [the team](docs/team.md).
+Plus 23 skills (Angular, NestJS, PostgreSQL, Docker, GitHub Actions, Vercel, SCSS, design tokens, Storybook, accessibility, i18n, web performance, security, architecture, end-to-end testing…), a project memory in `.senior-ai/`, safety hooks, and optional MCP integrations (Playwright, Context7, GitHub, Chrome DevTools, Angular CLI, Figma, Vercel). See [the team](docs/team.md).
 
 ---
 

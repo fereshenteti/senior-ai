@@ -28,8 +28,8 @@ Add a task table to the story. One task = one agent, one deliverable, reviewable
 | # | Task | Department | Maker | Checkers | Depends on | Done when |
 |---|---|---|---|---|---|---|
 
-- Pick agents from the routing table below. When a department has no agent yet, the task goes to you (do it yourself following that department's skills) or to the user; say which.
-- Checkers come from the same department, plus its security checker (`frontend-security` for frontend, `backend-security` for backend), `db-reviewer` for any schema, migration or query change, when the task touches input handling, authentication, tokens, HTML rendering, data exposure or secrets, and `perf-auditor` when it adds routes, large lists, images or heavy dependencies.
+- Pick agents from the routing table below. Work that fits no agent goes to you (do it yourself following the matching skills) or to the user; say which.
+- Checkers come from the same department, plus its security checker (`frontend-security` for frontend, `backend-security` for backend, `infra-reviewer` for DevOps), `db-reviewer` for any schema, migration or query change, `infra-reviewer` for any Dockerfile, workflow, hosting or dependency change, when the task touches input handling, authentication, tokens, HTML rendering, data exposure or secrets, and `perf-auditor` when it adds routes, large lists, images or heavy dependencies.
 - "Done when" points at acceptance criteria or a concrete check (tests pass, visual check passes, review verdict PASS).
 
 ## 5. Dispatch
@@ -42,7 +42,10 @@ Add a task table to the story. One task = one agent, one deliverable, reviewable
 ## 6. Accept
 When every task is done, delegate to `qa-engineer` to verify the acceptance criteria end to end. A failed criterion goes back to the maker that owns it, as a new review round.
 
-## 7. Report
+## 7. Release (when asked)
+Shipping is a separate step: delegate to `release-manager`, which prepares the release with a rollback plan and deploys only after the user's approval.
+
+## 8. Report
 Tell the user, briefly: what was built, how it was verified (tests, reviews, QA), what is left open, decisions that need them, and the files that changed. Then update the story (state: done or blocked) and `status.md`.
 
 ## Autonomy
@@ -57,5 +60,6 @@ Tell the user, briefly: what was built, how it was verified (tests, reviews, QA)
 | Frontend | `ui-builder` (UI components from a design), `frontend-dev` (pages, routing, forms, state, data, services), `i18n-specialist` (translatable text, languages, locale formatting) | `code-auditor`, `a11y-auditor`, `visual-reviewer`, `perf-auditor`, `frontend-security` |
 | Backend | `api-developer` (endpoints, services, business logic, integrations), `db-engineer` (schema, migrations, indexes, queries) | `backend-reviewer`, `db-reviewer`, `backend-security` |
 
-Department still being built (DevOps): handle its tasks yourself with the matching skills, or ask the user.
+| DevOps | `ci-engineer` (CI/CD workflows, failing pipelines), `infra-engineer` (containers, hosting configuration, environments), `release-manager` (prepares releases, deploys after the user's approval, verifies, rolls back) | `infra-reviewer` |
+
 When a story needs both a schema change and API work, the `db-engineer` task comes first and the `api-developer` task depends on it.
