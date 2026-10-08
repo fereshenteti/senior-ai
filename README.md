@@ -64,13 +64,23 @@ It asks which tools the team uses, then creates a project `AGENTS.md` with the d
 
 ### Use
 
+**In a session you already have open**, mention the agent at the start of your prompt (type `@agent-` to pick it from the list):
+
+```
+@agent-senior-ai:ui-builder Implement the Button component. Reference: @design/screens/button.png
+```
+
+Plain words work too: `Use the ui-builder agent to implement the Button component.` The agent handles that task and reports back; your session stays the same. The same works for the reviewers, e.g. `@agent-senior-ai:code-auditor review my changes`.
+
+**To start a new session as the agent**, so that every prompt goes to it:
+
 ```bash
 claude --agent ui-builder
 ```
 
-Example prompt: `Implement the Button component. Reference: @design/screens/button.png`
+Then prompt as usual: `Implement the Button component. Reference: @design/screens/button.png`. The short name works as long as no other plugin has an agent called `ui-builder`; otherwise use `senior-ai:ui-builder`.
 
-The `ui-builder` agent implements the component with tokens, writes its Storybook stories including an `AllStates` story that mirrors the reference sheet, runs the visual check, and delegates reviews to the read-only `visual-reviewer`, `a11y-auditor` and `code-auditor` subagents. The short name works as long as no other plugin has an agent called `ui-builder`; otherwise use the full name, `senior-ai:ui-builder`.
+The `ui-builder` agent implements the component with tokens, writes its Storybook stories including an `AllStates` story that mirrors the reference sheet, runs the visual check, and delegates reviews to the read-only `visual-reviewer`, `a11y-auditor` and `code-auditor` subagents.
 
 ---
 
@@ -116,11 +126,19 @@ From the project root, ask Vibe to use the `setup-project` skill. It asks which 
 
 ### Use
 
+**In a session you already have open**, press `Shift+Tab` until the agent shown is `ui-builder` (it cycles through the built-in agents first), then prompt as usual:
+
+```
+Implement the Button component. Reference: @design/screens/button.png
+```
+
+The reviewers are subagents, so you don't switch to them: ask the current agent, e.g. `Use the code-auditor subagent to review my changes.`
+
+**To start a new session as the agent:**
+
 ```bash
 vibe --agent ui-builder
 ```
-
-Example prompt: `Implement the Button component. Reference: @design/screens/button.png`
 
 ---
 
