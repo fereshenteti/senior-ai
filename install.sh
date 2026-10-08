@@ -325,7 +325,7 @@ next_steps() {
   case " $TOOLS " in
     *" claude "*)
       say "  Claude: add MCP servers with the commands in adapters/claude/mcp.md,"
-      say "          then start with: claude --agent senior-ai:ui-builder"
+      say "          then start with: claude --agent ui-builder"
       say "          Updates: claude plugin update $PLUGIN (you are told when one is available)" ;;
   esac
   say "  Per project: run /senior-ai:setup-project (Claude Code) or the setup-project skill (Vibe) from the project root."
