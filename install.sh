@@ -346,6 +346,10 @@ main() {
       say "Uninstalling senior-ai from $t"
       remove_installed "$t" 1
       [ "$DRY_RUN" = 1 ] || rm -f "$(manifest "$t")"
+      # Folders senior-ai created; rmdir only removes them if nothing else is inside.
+      if [ "$t" = vibe ] && [ "$DRY_RUN" = 0 ]; then
+        rmdir "$VIBE_DIR"/{senior-ai,skills,agents,prompts} 2>/dev/null || true
+      fi
     done
     say "Done."
     return 0
