@@ -10,7 +10,7 @@ function quoteForShell(arg) {
   return IS_WINDOWS && /[\s"&|<>^]/.test(arg) ? `"${arg.replace(/"/g, '\\"')}"` : arg;
 }
 
-// Returns { ok, status, stdout, stderr, missing, timedOut } and never throws.
+// Returns { ok, status, stdout, stderr, missing } and never throws.
 export function runCommand(command, args = [], { inherit = false, timeout = 120_000, env } = {}) {
   const result = spawnSync(command, IS_WINDOWS ? args.map(quoteForShell) : args, {
     encoding: 'utf8',
@@ -26,6 +26,5 @@ export function runCommand(command, args = [], { inherit = false, timeout = 120_
     stdout: result.stdout ?? '',
     stderr: result.stderr ?? '',
     missing,
-    timedOut: result.error?.code === 'ETIMEDOUT',
   };
 }

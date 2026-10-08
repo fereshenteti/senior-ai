@@ -147,10 +147,7 @@ async function install(options, prompter) {
   say(`senior-ai ${META.version} installer\n`);
   say('Looking for AI tools…');
   const detected = detectTools();
-  for (const tool of detected) {
-    const status = tool.installed ? (tool.version ? ` ${tool.version}` : '') : ': not found';
-    say(`  ${tool.installed ? '✓' : '·'} ${tool.name}${status}${tool.note ? ` (${tool.note})` : ''}`);
-  }
+  for (const tool of detected) say(`  ${tool.installed ? '✓' : '·'} ${tool.name}${tool.installed ? ` ${tool.version}` : ': not found'}`);
   if (!detected.some(tool => tool.installed)) {
     say('\nNo supported AI tool found. Install one of them, then run this installer again:');
     showInstallHelp(detected);
