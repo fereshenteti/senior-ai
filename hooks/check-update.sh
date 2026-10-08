@@ -3,7 +3,7 @@
 # Tells the user when GitHub has a newer senior-ai version, with the command to update.
 # It never updates anything. GitHub is checked at most once a day; any failure stays silent.
 #   check-update.sh --tool claude   Claude Code SessionStart hook
-#   check-update.sh --tool vibe     Vibe post_agent hook (shows the notice once per session)
+#   check-update.sh --tool vibe     Vibe post_agent hook (runs after every answer; shows the notice at most once a day)
 
 set -uo pipefail
 
@@ -52,11 +52,9 @@ version_gt() {
 
 json_string() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
 
-if [ "$TOOL" = vibe ]; then
-  session="$(sed -n 's/.*"session_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)"
-  notified="$STATE_DIR/vibe-notified-session"
-  [ -n "$session" ] && [ "$session" = "$(cat "$notified" 2>/dev/null)" ] && exit 0
-fi
+# Vibe has no session-start hook and does not always send a session id, so it is throttled by time.
+vibe_notified="$STATE_DIR/vibe-notified"
+[ "$TOOL" = vibe ] && [ -n "$(find "$vibe_notified" -mmin -1440 2>/dev/null)" ] && exit 0
 
 installed="$(installed_version)"
 latest="$(latest_version)"
@@ -69,7 +67,7 @@ if [ "$TOOL" = claude ]; then
 else
   source_dir="$(cat "$HERE/SOURCE" 2>/dev/null || echo "<your senior-ai clone>")"
   notice="$notice To update, run: cd \"$source_dir\" && git pull && ./install.sh --tool vibe"
-  mkdir -p "$STATE_DIR" && printf '%s\n' "$session" > "$notified"
+  mkdir -p "$STATE_DIR" && touch "$vibe_notified"
   printf '{"system_message":"%s"}\n' "$(json_string "$notice")"
 fi
 exit 0

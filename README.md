@@ -20,8 +20,8 @@ git clone https://github.com/fereshenteti/senior-ai.git ~/senior-ai && cd ~/seni
 | Claude Code | Installs the `senior-ai@feres` plugin from GitHub (with `--link`: from this folder). Rules are injected at session start; skills and agents are `senior-ai:<name>`. | `claude plugin update senior-ai@feres` |
 | Mistral Vibe | Copies skills, prompts, agents and rules into `~/.vibe` (with `--link`: symlinks to this folder). Existing files are moved to `~/.senior-ai/backups/` and restored on `--uninstall`; your own `~/.vibe/AGENTS.md` gets a marked block instead of being replaced. | `git pull`, then re-run `./install.sh --tool vibe` |
 
-Updates are never installed automatically. While GitHub has a newer version, each new session tells you and shows the command to run:
-Claude Code when the session starts, Vibe after its first answer. GitHub is checked at most once a day.
+Updates are never installed automatically. While GitHub has a newer version, you are told and shown the command to run:
+Claude Code at the start of every session, Vibe after an answer at most once a day. GitHub is checked at most once a day.
 
 Claude Code only, without cloning:
 ```bash
