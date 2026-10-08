@@ -85,6 +85,11 @@ test('done gate: code changed and nothing verified → sent back once', () => {
   assert.equal(hook('done-gate.mjs', { transcript_path: file, stop_hook_active: true }), null);
 });
 
+test('done gate: a commit message saying "test" is not a test run', () => {
+  const file = transcript([prompt('x'), toolUse('Edit', { file_path: 'a.ts' }), toolResult(), toolUse('Bash', { command: 'git commit -m test' }), toolResult()]);
+  assert.match(hook('done-gate.mjs', { transcript_path: file }).hookSpecificOutput.additionalContext, /done gate/);
+});
+
 test('done gate: silent when verified, when only docs changed, or for an earlier turn', () => {
   const verified = transcript([prompt('x'), toolUse('Edit', { file_path: 'a.ts' }), toolResult(), toolUse('Bash', { command: 'npm test' }), toolResult()]);
   assert.equal(hook('done-gate.mjs', { transcript_path: verified }), null);

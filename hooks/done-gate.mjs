@@ -9,8 +9,23 @@ import { readEvent, runHook } from './lib.mjs';
 
 const CODE_FILE = /\.(?:[cm]?[jt]sx?|vue|svelte|html|s?css|less|py|go|rs|java|kt|cs|php|rb|swift|sql)$/i;
 const EDIT_TOOLS = new Set(['Edit', 'Write', 'MultiEdit', 'NotebookEdit']);
-const VERIFY_COMMAND =
-  /\b(?:test|tests|lint|eslint|build|tsc|typecheck|type-check|vitest|jest|karma|playwright|cypress|pytest|go\s+(?:test|build|vet)|cargo\s+(?:test|build|check|clippy)|mvn|gradle|dotnet\s+(?:test|build)|ng\s+(?:test|build|lint)|nx\s+(?:test|build|lint|affected))\b/;
+// A check command at the start of one part of a shell command (so `git commit -m test` is not one).
+const CHECK_COMMAND = new RegExp(
+  '^(?:\\w+=\\S+\\s+)*(?:npx\\s+|bunx\\s+|pnpm\\s+(?:exec|dlx)\\s+|yarn\\s+dlx\\s+)?(?:' +
+    [
+      '(?:npm|pnpm|yarn|bun)\\s+(?:run\\s+)?(?:test|lint|build|typecheck|type-check|check|e2e|verify)\\b',
+      '(?:tsc|vitest|jest|karma|eslint|playwright|cypress|pytest|mvn|gradle|\\.\\/gradlew)\\b',
+      'make\\s+(?:test|check|lint|build)\\b',
+      'ng\\s+(?:test|build|lint|e2e)\\b',
+      'nx\\s+(?:test|build|lint|affected|run)\\b',
+      'node\\s+--test\\b',
+      'go\\s+(?:test|build|vet)\\b',
+      'cargo\\s+(?:test|build|check|clippy)\\b',
+      'dotnet\\s+(?:test|build)\\b',
+    ].join('|') +
+    ')',
+);
+const isCheck = command => command.split(/&&|\|\||;|\|/).some(part => CHECK_COMMAND.test(part.trim()));
 const VERIFYING_AGENT = /(?:auditor|reviewer|qa-engineer|test)/;
 
 // Tool calls made since the user's last message.
@@ -48,7 +63,7 @@ await runHook(() => {
   if (!changed.size) return null;
   const verified = calls.some(
     call =>
-      (['Bash', 'PowerShell'].includes(call.name) && VERIFY_COMMAND.test(call.input?.command ?? '')) ||
+      (['Bash', 'PowerShell'].includes(call.name) && isCheck(call.input?.command ?? '')) ||
       (['Agent', 'Task'].includes(call.name) && VERIFYING_AGENT.test(call.input?.subagent_type ?? '')),
   );
   if (verified) return null;
