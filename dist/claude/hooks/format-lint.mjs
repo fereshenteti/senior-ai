@@ -38,7 +38,7 @@ function run(bin, args, cwd) {
 
 await runHook(() => {
   const event = readEvent();
-  const file = event.tool_input?.file_path;
+  const file = event.tool_input?.file_path ?? event.tool_input?.path; // Unified Harness writes use `path`
   if (!file || SKIPPED_DIRS.test(file) || !fs.existsSync(file)) return null;
   const root = projectRoot(path.resolve(file));
   if (!root) return null;

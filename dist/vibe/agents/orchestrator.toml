@@ -1,3 +1,7 @@
 # Generated from departments/core/agents/orchestrator.md; edit that file, not this one.
 # Main agent: pick it with Shift+Tab, or start with `vibe --agent orchestrator`
 system_prompt_id = "orchestrator"
+
+# Delegating to senior-ai's subagents doesn't ask each time; what they do still follows your approvals.
+[tools.task]
+allowlist = ["explore", "a11y-auditor", "api-developer", "architect", "backend-reviewer", "backend-security", "ci-engineer", "code-auditor", "db-engineer", "db-reviewer", "frontend-dev", "frontend-security", "i18n-specialist", "infra-engineer", "infra-reviewer", "perf-auditor", "qa-engineer", "release-manager", "ui-builder-subagent", "visual-reviewer"]

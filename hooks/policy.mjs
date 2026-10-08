@@ -95,18 +95,25 @@ export function checkCommand(command) {
   return { decision: 'allow' };
 }
 
-const SHELL_TOOLS = ['bash', 'git_bash', 'powershell', 'shell'];
-const WRITE_TOOLS = ['write', 'write_file'];
-const EDIT_TOOLS = ['edit', 'multiedit'];
+// Tool names of Claude Code, Vibe, and Vibe's Unified Harness (namespaced: file_system.*, process.*).
+const SHELL_TOOLS = ['bash', 'git_bash', 'powershell', 'shell', 'file_system.bash', 'process.start'];
+const WRITE_TOOLS = ['write', 'write_file', 'file_system.write_file'];
+const EDIT_TOOLS = ['edit', 'multiedit', 'file_system.search_replace'];
 
-// One decision for a tool call from Claude Code or Vibe (their argument names are the same).
+// The text an edit adds: Claude/Vibe `new_string`, Claude `edits[]`, Unified Harness `content[].new_str`.
+function addedText(input) {
+  if (typeof input.new_string === 'string') return input.new_string;
+  const changes = Array.isArray(input.edits) ? input.edits : Array.isArray(input.content) ? input.content : [];
+  return changes.map(change => change.new_string ?? change.new_str ?? '').join('\n');
+}
+
+export const editedFile = input => input.file_path ?? input.path;
+
+// One decision for a tool call from Claude Code or Vibe.
 export function checkToolCall(toolName, input = {}) {
   const tool = String(toolName).toLowerCase();
   if (SHELL_TOOLS.includes(tool)) return checkCommand(input.command);
-  if (WRITE_TOOLS.includes(tool)) return checkWrite(input.file_path, input.content);
-  if (EDIT_TOOLS.includes(tool)) {
-    const added = input.new_string ?? (input.edits ?? []).map(edit => edit.new_string).join('\n');
-    return checkWrite(input.file_path, added);
-  }
+  if (WRITE_TOOLS.includes(tool)) return checkWrite(editedFile(input), input.content);
+  if (EDIT_TOOLS.includes(tool)) return checkWrite(editedFile(input), addedText(input));
   return { decision: 'allow' };
 }

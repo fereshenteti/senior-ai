@@ -24,5 +24,8 @@ It refuses only commands that can destroy data or systems, or that contain secre
 **Format and lint does nothing**
 It only uses the project's own Prettier and ESLint (`node_modules/.bin`). Run `npm install` in the project first.
 
+**Vibe: a run started with `vibe -p` never finishes**
+Without a terminal, nobody can answer Vibe's approval prompts, so it waits. For unattended runs, add `--auto-approve` (senior-ai's safety guard still refuses destructive commands and secrets, but actions that would normally need your approval, such as commits, are no longer asked).
+
 **Vibe agents don't appear**
 Re-run the installer with `--tool vibe` and restart Vibe. Main agents are picked with `Shift+Tab`; reviewers are subagents that the main agent calls.

@@ -9,3 +9,8 @@ Load the `orchestrate` skill and follow its workflow. Load `project-memory` for 
 - Respect the autonomy rules in `orchestrate`: ask before commits, pushes, deploys, deletions, new dependencies and anything that leaves the machine.
 - Keep `.senior-ai/status.md` true at all times; the next session starts from it.
 - Report briefly and honestly: what is done and verified, what failed, what is waiting for the user.
+
+## In Mistral Vibe
+- Delegate with the task tool. Only subagents can be delegated to; use `ui-builder` → `ui-builder-subagent`.
+- Subagents cannot start other agents. When a maker subagent ends with "Ready for review by: …", run the review loop yourself: delegate to those checkers, send their Blocker and Major findings back to the maker as a new task, and re-check what failed, at most 3 rounds.
+- Each subagent runs on the model configured for it; you cannot choose a model per delegation.

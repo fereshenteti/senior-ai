@@ -34,14 +34,14 @@ name: architect                 # = file name
 department: core                # = folder
 description: …                  # when to use it; shown to the tools
 role: maker                     # maker (edits files) | checker (read-only)
-entry: subagent                 # main (Vibe: pickable with Shift+Tab) | subagent (delegated to)
+entry: subagent                 # main (Vibe: Shift+Tab) | subagent (delegated to) | both (Vibe gets a main and a <name>-subagent profile)
 model: top                      # session | small | mid | top (Claude: inherit, haiku, sonnet, opus)
 needs_vision: false             # true when it must read images
 ---
 You are **architect**, …
 ```
 
-Generated per tool: Claude gets `agents/<name>.md` (checkers get read-only tools); Vibe gets `agents/<name>.toml` + `prompts/<name>.md` (checkers can't edit or write).
+Generated per tool: Claude gets `agents/<name>.md` (checkers get read-only tools); Vibe gets `agents/<name>.toml` + `prompts/<name>.md` (checkers can't edit or write), with Vibe-specific notes appended: main agents may delegate to every senior-ai subagent and run the review loop for subagent makers, which hand their work back with `Ready for review by:` (Vibe allows one level of delegation).
 
 ## Adding things
 
@@ -61,11 +61,17 @@ node scripts/test.mjs
 
 Runs on every push on macOS, Linux and Windows (Node 22 and 24). Installer tests run `install.mjs` in a fake home with fake `claude` and `vibe` commands; hook tests run each generated hook with real event shapes.
 
-**Evaluations** run real Claude Code agents on a copy of `tests/fixtures/sample-app` and check what they produce. They cost credits, so they run on demand:
+**Evaluations** run real agents on a copy of `tests/fixtures/sample-app` and check what they produce. They use your AI tool's usage, so they run on demand:
 
 ```bash
 node tests/evals/run.mjs
 ```
+
+```bash
+node tests/evals/run.mjs --tool vibe db-reviewer
+```
+
+Vibe evaluations use the installed senior-ai (re-run the installer first) and go through the orchestrator, since Vibe can't start a subagent directly.
 
 **Context cost** of senior-ai per session:
 

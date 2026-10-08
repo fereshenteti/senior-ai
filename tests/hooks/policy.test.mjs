@@ -117,4 +117,10 @@ test('one decision for both tools', () => {
   assert.equal(checkToolCall('Edit', { file_path: 'a.ts', old_string: 'x', new_string: FAKE.key }).decision, 'deny');
   assert.equal(checkToolCall('MultiEdit', { file_path: 'a.ts', edits: [{ new_string: FAKE.stripe }] }).decision, 'deny');
   assert.equal(checkToolCall('Read', { file_path: '.env' }).decision, 'allow');
+  // Vibe's Unified Harness: namespaced tools, `path` for writes, `content[].new_str` for edits.
+  assert.equal(checkToolCall('file_system.bash', { command: 'rm -rf ~' }).decision, 'deny');
+  assert.equal(checkToolCall('process.start', { command: 'git push' }).decision, 'ask');
+  assert.equal(checkToolCall('file_system.write_file', { path: 'a.ts', content: FAKE.aws }).decision, 'deny');
+  assert.equal(checkToolCall('file_system.write_file', { path: '.env', content: FAKE.aws }).decision, 'allow');
+  assert.equal(checkToolCall('file_system.search_replace', { file_path: 'a.ts', content: [{ old_str: 'x', new_str: FAKE.github }] }).decision, 'deny');
 });

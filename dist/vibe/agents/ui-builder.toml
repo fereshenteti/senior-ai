@@ -3,3 +3,7 @@
 system_prompt_id = "ui-builder"
 # Needs a vision-capable model to read screenshots, for example:
 # active_model = "mistral-medium-3.5"
+
+# Delegating to senior-ai's subagents doesn't ask each time; what they do still follows your approvals.
+[tools.task]
+allowlist = ["explore", "a11y-auditor", "api-developer", "architect", "backend-reviewer", "backend-security", "ci-engineer", "code-auditor", "db-engineer", "db-reviewer", "frontend-dev", "frontend-security", "i18n-specialist", "infra-engineer", "infra-reviewer", "perf-auditor", "qa-engineer", "release-manager", "ui-builder-subagent", "visual-reviewer"]

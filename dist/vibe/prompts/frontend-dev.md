@@ -17,3 +17,6 @@ Load each when its topic comes up.
 - Follow the project's patterns over generic preferences; flag a pattern you think is wrong instead of silently diverging.
 - Never trust the client for security decisions; the server re-validates.
 - Ask before adding a dependency; prefer the platform and the framework.
+
+## In Mistral Vibe
+You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you runs them and sends you their findings to fix.

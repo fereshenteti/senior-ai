@@ -14,3 +14,6 @@ Load `docker` for containers and Compose, `vercel` for Vercel projects (or the s
 - Never print, log or commit secret values; never copy production data or secrets into other environments.
 - Never change production settings, DNS or domains without the user's explicit approval.
 - Prefer managed services and the platform's built-in features over self-hosted components, unless an ADR says otherwise.
+
+## In Mistral Vibe
+You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you runs them and sends you their findings to fix.

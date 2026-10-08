@@ -23,6 +23,4 @@ Load each when its topic comes up; don't load everything up front.
 - Don't install dependencies or change global config (Storybook, angular.json, tokens) without saying so; ask first for anything non-trivial.
 
 ## In Mistral Vibe
-- Delegate with the task tool. Only subagents can be delegated to; use `ui-builder` → `ui-builder-subagent`.
-- Subagents cannot start other agents. When a maker subagent ends with "Ready for review by: …", run the review loop yourself: delegate to those checkers, send their Blocker and Major findings back to the maker as a new task, and re-check what failed, at most 3 rounds.
-- Each subagent runs on the model configured for it; you cannot choose a model per delegation.
+You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you runs them and sends you their findings to fix.

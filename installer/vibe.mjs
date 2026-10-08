@@ -86,20 +86,25 @@ export function installVibe({ ops, src, vibeDir, version }) {
 // One [[hooks]] entry per hook that supports Vibe. Vibe runs hook commands through the system
 // shell (cmd.exe on Windows), so the command is plain `node "<path>"` with forward slashes,
 // which every shell and Node accept.
+// A hook may need several Vibe events (an array); each gets its own uniquely named entry.
 export function vibeHooksToml(registry, hooksDir) {
   return registry
     .filter(hook => hook.vibe)
-    .map(hook => {
-      const script = path.join(hooksDir, hook.script).split(path.sep).join('/');
-      const lines = [
-        '[[hooks]]',
-        `name = ${JSON.stringify(`senior-ai-${hook.id}`)}`,
-        `type = ${JSON.stringify(hook.vibe.type)}`,
-        `command = ${JSON.stringify(`node "${script}" --tool vibe`)}`,
-      ];
-      if (hook.vibe.match) lines.push(`match = ${JSON.stringify(hook.vibe.match)}`);
-      lines.push(`timeout = ${hook.vibe.timeout.toFixed(1)}`, `description = ${JSON.stringify(hook.description)}`);
-      return lines.join('\n');
+    .flatMap(hook => {
+      const events = [hook.vibe].flat();
+      return events.map(event => {
+        const script = path.join(hooksDir, hook.script).split(path.sep).join('/');
+        const name = events.length > 1 ? `senior-ai-${hook.id}-${event.type.replace('_', '-')}` : `senior-ai-${hook.id}`;
+        const lines = [
+          '[[hooks]]',
+          `name = ${JSON.stringify(name)}`,
+          `type = ${JSON.stringify(event.type)}`,
+          `command = ${JSON.stringify(`node "${script}" --tool vibe`)}`,
+        ];
+        if (event.match) lines.push(`match = ${JSON.stringify(event.match)}`);
+        lines.push(`timeout = ${event.timeout.toFixed(1)}`, `description = ${JSON.stringify(hook.description)}`);
+        return lines.join('\n');
+      });
     })
     .join('\n\n');
 }

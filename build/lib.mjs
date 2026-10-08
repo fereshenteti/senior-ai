@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 export const REPO = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const ROLES = ['maker', 'checker'];
-const ENTRIES = ['main', 'subagent'];
+const ENTRIES = ['main', 'subagent', 'both']; // both: a main agent that can also be delegated to
 const MODELS = ['session', 'small', 'mid', 'top'];
 
 export function readMeta() {

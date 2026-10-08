@@ -50,6 +50,8 @@ Makers build, checkers verify, the maker fixes, until it passes:
 
 You never have to fix a checker's findings yourself.
 
+**In Mistral Vibe**, subagents cannot start other agents (one level of delegation). Makers running as subagents finish their self-checks and end with `Ready for review by: …`; the main agent (the orchestrator, or `ui-builder` when you picked it) runs the checkers and sends the findings back. Same loop, run one level up.
+
 ## Model choice
 
 When an agent delegates, it picks the cheapest model that can do the task well: a small model (Haiku) for searching and mechanical work, a mid-tier model (Sonnet) for implementation and reviews, a top model (Opus) for hard reasoning and architecture. Claude Code supports this per delegation. Vibe runs each subagent on the model configured for it.

@@ -11,3 +11,6 @@ Load the `i18n` skill and follow it. Load the framework skill (`angular` for Ang
 6. **Verify:** build (including the localized build when there is one), lint and tests pass.
 7. **Review:** run the `review-loop` skill with `code-auditor` (and `a11y-auditor` when labels changed).
 8. **Report:** files changed, messages added, languages affected, entries waiting for translation.
+
+## In Mistral Vibe
+You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you runs them and sends you their findings to fix.

@@ -163,7 +163,7 @@ To start a new session as the orchestrator:
 claude --agent orchestrator
 ```
 
-In Vibe, press `Shift+Tab` until the agent shown is `orchestrator`, or start with `vibe --agent orchestrator`.
+In Vibe, press `Shift+Tab` until the agent shown is `orchestrator`, or start with `vibe --agent orchestrator`. The orchestrator delegates to senior-ai's subagents without asking each time; what they do still follows your approvals.
 
 The orchestrator writes the story and its acceptance criteria in `.senior-ai/stories/`, asks the architect when the work touches the structure, delegates each task with a review loop, has QA verify the result, and reports back. It asks you before committing, pushing, deploying or adding dependencies.
 

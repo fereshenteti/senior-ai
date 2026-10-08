@@ -122,3 +122,56 @@ test('session context: rules, project status, setup hint', () => {
   assert.match(withStatus.hookSpecificOutput.additionalContext, /S-001 \| Login/);
   assert.doesNotMatch(withStatus.hookSpecificOutput.additionalContext, /setup-project integrates/);
 });
+
+test('Vibe done gate: edits without checks → sent back at the end of the answer, once', () => {
+  const state = tempDir();
+  const env = { SENIOR_AI_STATE_DIR: state };
+  const cwd = tempDir();
+  const vibe = event => hook('done-gate.mjs', { cwd, ...event }, { tool: 'vibe', env });
+  assert.equal(vibe({ hook_event_name: 'post_tool', tool_name: 'edit', tool_input: { file_path: `${cwd}/src/app.ts` } }), null);
+  assert.equal(vibe({ hook_event_name: 'post_tool', tool_name: 'bash', tool_input: { command: 'git commit -m test' } }), null);
+  const end = vibe({ hook_event_name: 'post_agent' });
+  assert.equal(end.decision, 'deny');
+  assert.match(end.reason, /1 code file changed/);
+  // The next answer starts clean: explaining without new edits passes.
+  assert.equal(vibe({ hook_event_name: 'post_agent' }), null);
+});
+
+test('Vibe done gate never touches the edited file, and understands Unified Harness tool names', () => {
+  const env = { SENIOR_AI_STATE_DIR: tempDir() };
+  const cwd = tempDir();
+  const source = path.join(cwd, 'app.ts');
+  fs.writeFileSync(source, 'export const keep = 1;\n');
+  const vibe = event => hook('done-gate.mjs', { cwd, ...event }, { tool: 'vibe', env });
+  vibe({ hook_event_name: 'post_tool', tool_name: 'file_system.write_file', tool_input: { path: source, content: 'x' } });
+  vibe({ hook_event_name: 'post_tool', tool_name: 'file_system.search_replace', tool_input: { file_path: source, content: [{ old_str: 'a', new_str: 'b' }] } });
+  assert.equal(fs.readFileSync(source, 'utf8'), 'export const keep = 1;\n');
+  assert.equal(vibe({ hook_event_name: 'post_agent' }).decision, 'deny');
+  vibe({ hook_event_name: 'post_tool', tool_name: 'file_system.write_file', tool_input: { path: source, content: 'x' } });
+  vibe({ hook_event_name: 'post_tool', tool_name: 'subagent.spawn', tool_input: { agent: 'code-auditor' } });
+  assert.equal(vibe({ hook_event_name: 'post_agent' }), null);
+});
+
+test('Vibe done gate: a check or a reviewer delegation counts as verification', () => {
+  const env = { SENIOR_AI_STATE_DIR: tempDir() };
+  for (const verification of [
+    { tool_name: 'bash', tool_input: { command: 'npm test' } },
+    { tool_name: 'task', tool_input: { agent: 'code-auditor', task: 'review' } },
+  ]) {
+    const cwd = tempDir();
+    const vibe = event => hook('done-gate.mjs', { cwd, ...event }, { tool: 'vibe', env });
+    vibe({ hook_event_name: 'post_tool', tool_name: 'write_file', tool_input: { file_path: `${cwd}/a.ts` } });
+    vibe({ hook_event_name: 'post_tool', ...verification });
+    assert.equal(vibe({ hook_event_name: 'post_agent' }), null, verification.tool_name);
+  }
+});
+
+test('Vibe report check: checker output without a verdict', () => {
+  const missing = hook('report-check.mjs', { tool_name: 'task', tool_input: { agent: 'db-reviewer' }, tool_output_text: 'All good.' }, { tool: 'vibe' });
+  assert.match(missing.hook_specific_output.additional_context, /db-reviewer/);
+  assert.equal(hook('report-check.mjs', { tool_name: 'task', tool_input: { agent: 'db-reviewer' }, tool_output_text: 'Verdict: PASS' }, { tool: 'vibe' }), null);
+  for (const decorated of ['## Review — Verdict: **FAIL**', '**Verdict:** PASS', 'Verdict: `FAIL`']) {
+    assert.equal(hook('report-check.mjs', { tool_name: 'task', tool_input: { agent: 'db-reviewer' }, tool_output_text: decorated }, { tool: 'vibe' }), null, decorated);
+  }
+  assert.ok(hook('report-check.mjs', { tool_name: 'task', tool_input: { agent: 'db-reviewer' }, tool_output_text: 'Verdict pending, PASSING tests' }, { tool: 'vibe' }));
+});

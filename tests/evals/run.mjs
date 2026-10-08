@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-// Evaluations: real Claude Code runs of senior-ai agents on a copy of the sample app, with
-// automatic checks on what they produce. They cost credits, so they run on demand, not in CI.
-//   node tests/evals/run.mjs                 every scenario
-//   node tests/evals/run.mjs orchestrator    one scenario
-// Uses the plugin in dist/claude (run `node build/index.mjs` first) and the `claude` CLI.
+// Evaluations: real runs of senior-ai agents on a copy of the sample app, with automatic checks
+// on what they produce. They use your AI tool's usage, so they run on demand, not in CI.
+//   node tests/evals/run.mjs                          every scenario, Claude Code
+//   node tests/evals/run.mjs orchestrator             one scenario
+//   node tests/evals/run.mjs --tool vibe db-reviewer  Mistral Vibe (uses the installed senior-ai)
+// Claude Code uses the plugin in dist/claude (run `node build/index.mjs` first).
 
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -31,7 +32,7 @@ function plant(dir, file, from, to) {
 
 const RENDER_SAFE = "list.replaceChildren(...notes.map(note => Object.assign(document.createElement('li'), { textContent: note.title })));";
 const unchanged = dir => spawnSync('git', ['diff', '--quiet'], { cwd: dir }).status === 0;
-const verdict = report => /Verdict:\s*(PASS|FAIL)/.exec(report)?.[1];
+const verdict = report => /Verdict\W{0,6}(PASS|FAIL)\b/.exec(report)?.[1];
 
 const SCENARIOS = {
   orchestrator: {
@@ -241,22 +242,55 @@ function delegations(stream) {
   return found;
 }
 
-const wanted = process.argv.slice(2);
-let failures = 0;
-for (const [name, scenario] of Object.entries(SCENARIOS)) {
-  if (wanted.length && !wanted.includes(name)) continue;
-  const dir = prepareProject(scenario.setup);
-  console.log(`\n▶ ${name}  (${dir})`);
+const args = process.argv.slice(2);
+const toolIndex = args.indexOf('--tool');
+const TOOL = toolIndex === -1 ? 'claude' : args.splice(toolIndex, 2)[1];
+const wanted = args;
+
+function runClaude(scenario, dir) {
   const run = spawnSync(
     'claude',
     ['-p', '--plugin-dir', PLUGIN, '--agent', scenario.agent, '--permission-mode', 'bypassPermissions', '--output-format', 'stream-json', '--verbose', scenario.prompt],
     { cwd: dir, encoding: 'utf8', timeout: 30 * 60_000, maxBuffer: 256 * 1024 * 1024, shell: process.platform === 'win32' },
   );
-  fs.writeFileSync(`${dir}.transcript.jsonl`, run.stdout ?? '');
-  const used = delegations(run.stdout ?? '');
-  console.log(`  delegations: ${used.length ? used.join(', ') : 'none'}`);
-  if (used.cost !== undefined) console.log(`  cost: $${used.cost.toFixed(2)}`);
-  for (const [label, ok] of scenario.checks(dir, used.report ?? '')) {
+  const found = delegations(run.stdout ?? '');
+  return { stream: run.stdout ?? '', list: [...found], cost: found.cost, report: found.report };
+}
+
+// Vibe can't start a subagent directly: the orchestrator delegates to it. --auto-approve because
+// nobody is there to approve; senior-ai's safety hooks still apply.
+function runVibe(scenario, dir) {
+  const agent = scenario.agent.replace(/^senior-ai:/, '');
+  const prompt = agent === 'orchestrator' ? scenario.prompt : `Use the ${agent} subagent for this, then give me its full report unchanged: ${scenario.prompt}`;
+  const run = spawnSync('vibe', ['-p', prompt, '--agent', 'orchestrator', '--trust', '--auto-approve', '--max-turns', '40', '--output', 'streaming'], {
+    cwd: dir,
+    encoding: 'utf8',
+    timeout: 30 * 60_000,
+    maxBuffer: 256 * 1024 * 1024,
+    shell: process.platform === 'win32',
+  });
+  const events = (run.stdout ?? '').split('\n').flatMap(line => {
+    try {
+      return [JSON.parse(line)];
+    } catch {
+      return [];
+    }
+  });
+  const spawned = events.filter(e => e.detail?.toolName === 'subagent.spawn').map(e => e.detail?.display?.message);
+  const texts = events.filter(e => e.role === 'assistant').map(e => (e.content ?? []).map(part => part.text ?? '').join(''));
+  return { stream: run.stdout ?? '', list: spawned, report: texts.filter(Boolean).pop() ?? '' };
+}
+let failures = 0;
+for (const [name, scenario] of Object.entries(SCENARIOS)) {
+  if (wanted.length && !wanted.includes(name)) continue;
+  const dir = prepareProject(scenario.setup);
+  console.log(`\n▶ ${name}  (${dir})`);
+  const result = TOOL === 'vibe' ? runVibe(scenario, dir) : runClaude(scenario, dir);
+  fs.writeFileSync(`${dir}.transcript.jsonl`, result.stream);
+  const used = result.list ?? [];
+  console.log(`  ${TOOL} · delegations: ${used.length ? used.join(', ') : 'none'}`);
+  if (result.cost !== undefined) console.log(`  usage (API-equivalent): $${result.cost.toFixed(2)}`);
+  for (const [label, ok] of scenario.checks(dir, result.report ?? '')) {
     console.log(`  ${ok ? '✓' : '✗'} ${label}`);
     if (!ok) failures++;
   }

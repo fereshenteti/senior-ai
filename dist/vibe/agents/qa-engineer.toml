@@ -1,5 +1,5 @@
 # Generated from departments/core/agents/qa-engineer.md; edit that file, not this one.
-# Subagent: the main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it with the task tool.
 agent_type = "subagent"
 system_prompt_id = "qa-engineer"
 # Needs a vision-capable model to read screenshots, for example:

@@ -1,0 +1,11 @@
+[
+  "a11y-auditor",
+  "backend-reviewer",
+  "backend-security",
+  "code-auditor",
+  "db-reviewer",
+  "frontend-security",
+  "infra-reviewer",
+  "perf-auditor",
+  "visual-reviewer"
+]

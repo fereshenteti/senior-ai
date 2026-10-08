@@ -7,11 +7,11 @@ Hooks are small scripts the AI tool runs automatically at certain moments. They 
 | Session context | Session start, resume, `/clear`, compaction | Loads the global rules and the project's `.senior-ai/status.md` | ✓ | rules are in `AGENTS.md` |
 | Safety guard | Before every shell command, file write and edit | Refuses destructive commands and secrets in files; asks you before sensitive actions | ✓ refuses and asks | ✓ refuses; Vibe's own approval prompt asks |
 | Format and lint | After every file write or edit | Formats the file with the project's Prettier, sends its ESLint errors back to the agent | ✓ | ✓ |
-| Done gate | When the agent is about to finish | If code changed and nothing was built, tested, linted or reviewed, sends the agent back once to verify or explain | ✓ | — |
-| Report check | When a reviewer's report comes back | Makes sure the report has its `Verdict: PASS` or `Verdict: FAIL` line | ✓ | — |
+| Done gate | When the agent is about to finish | If code changed and nothing was built, tested, linted or reviewed, sends the agent back once to verify or explain | ✓ | ✓ (records each tool call, decides at the end of the answer) |
+| Report check | When a reviewer's report comes back | Makes sure the report has its `Verdict: PASS` or `Verdict: FAIL` line | ✓ | ✓ with Vibe's classic engine; not with its Unified Harness, which doesn't say which agent a report comes from |
 | Update notice | Session start (Claude), after an answer at most once a day (Vibe) | Tells you when a newer senior-ai is on GitHub, with the update command | ✓ | ✓ |
 
-All hooks run with Node (`node <script>`), the same way on macOS, Linux and Windows. A hook that fails for an unexpected reason stays silent: it never blocks your work.
+All hooks run with Node (`node <script>`), the same way on macOS, Linux and Windows. In Vibe they understand both of its engines: the classic tool names (`bash`, `write_file`, `edit`, `task`) and the Unified Harness ones (`file_system.bash`, `file_system.write_file`, `file_system.search_replace`, `process.start`, `subagent.spawn`). A hook that fails for an unexpected reason stays silent: it never blocks your work.
 
 ## Refused
 

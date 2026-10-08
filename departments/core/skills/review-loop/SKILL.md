@@ -16,7 +16,9 @@ Makers build, checkers verify, and the maker fixes what the checkers find. The u
 5. **Stop** when every checker returns PASS, or after **3 rounds**. After 3 rounds, escalate to whoever called you (the orchestrator, or the user) with the remaining findings and why they are still open.
 6. **Report:** rounds used, each checker's final verdict, findings fixed, findings left open with reasons. When an orchestrator called you, it records this in the story's review log.
 
-When delegation is not available, run the checkers' skills yourself, one after another, and say that the review was self-performed.
+When you run as a subagent and your tool doesn't let subagents start other agents (Mistral Vibe allows one level), don't review your own work: finish your self-checks and end your report with `Ready for review by:` and the checkers. The agent that called you runs them and sends you the findings as a new task; fix them and report again.
+
+When delegation is not available at all, run the checkers' skills yourself, one after another, and say that the review was self-performed.
 
 ## For checkers: the verdict line
 Every checker report starts with exactly one of these lines:
@@ -27,4 +29,4 @@ Verdict: FAIL
 - **FAIL** when there is at least one Blocker or Major finding; **PASS** otherwise (Minor and Nit findings can still be listed).
 - Then the findings, most severe first, each with: severity (Blocker, Major, Minor, Nit), location (`file:line`, story or state), what is wrong, the concrete failure, and the fix.
 - On a re-check, say for each previous finding whether it is fixed, and report only new findings in addition.
-- Severity follows `code-review-standards`. Do not inflate it to force a fix, and do not lower it to pass.
+- Severity follows `code-review-standards`, with exactly these words: **Blocker**, **Major**, **Minor**, **Nit** (not Critical, High, Medium or Low): the maker and the hooks rely on them. Do not inflate severity to force a fix, and do not lower it to pass.

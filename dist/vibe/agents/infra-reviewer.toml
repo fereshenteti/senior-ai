@@ -1,5 +1,5 @@
 # Generated from departments/devops/agents/infra-reviewer.md; edit that file, not this one.
-# Subagent: the main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it with the task tool.
 agent_type = "subagent"
 system_prompt_id = "infra-reviewer"
 disabled_tools = ["edit", "write_file"]
