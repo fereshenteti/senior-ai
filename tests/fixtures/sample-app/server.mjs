@@ -31,7 +31,7 @@ export function createServer() {
       return send(201, note);
     }
     const file = path.join(PUBLIC, req.url === '/' ? 'index.html' : path.normalize(req.url));
-    if (!file.startsWith(PUBLIC) || !fs.existsSync(file)) return send(404, { error: 'Not found' });
+    if (!file.startsWith(PUBLIC + path.sep) || !fs.existsSync(file)) return send(404, { error: 'Not found' });
     send(200, fs.readFileSync(file, 'utf8'), TYPES[path.extname(file)] ?? 'text/plain');
   });
 }
