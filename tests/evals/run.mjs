@@ -85,6 +85,67 @@ const SCENARIOS = {
       ['no project file was modified (read-only)', unchanged(dir)],
     ],
   },
+  'backend-security': {
+    agent: 'senior-ai:backend-security',
+    setup: dir => {
+      fs.writeFileSync(
+        path.join(dir, 'db.mjs'),
+        "// Database access (PostgreSQL in production).\nexport async function query(sql) {\n  throw new Error('not connected in tests: ' + sql);\n}\n",
+      );
+      plant(
+        dir,
+        'server.mjs',
+        "    if (req.url === '/api/notes' && req.method === 'GET') return send(200, notes);",
+        `    if (req.url === '/api/notes' && req.method === 'GET') return send(200, notes);
+    // Notes of a user, with an optional search: GET /api/users/:id/notes?q=…
+    const userNotes = /^\\/api\\/users\\/([^/]+)\\/notes(?:\\?q=(.*))?$/.exec(req.url);
+    if (userNotes && req.method === 'GET') {
+      const [, userId, search = ''] = userNotes;
+      const rows = await query("SELECT * FROM notes WHERE owner_id = " + userId + " AND title LIKE '%" + decodeURIComponent(search) + "%'");
+      return send(200, rows);
+    }`,
+      );
+      plant(dir, 'server.mjs', "import { fileURLToPath } from 'node:url';", "import { fileURLToPath } from 'node:url';\nimport { query } from './db.mjs';");
+    },
+    prompt: `Review the backend (server.mjs, db.mjs) for security issues. Users are identified by a session cookie handled by a gateway that sets the x-user-id header. ${NON_INTERACTIVE}`,
+    checks: (dir, report) => [
+      ['the verdict is FAIL', verdict(report) === 'FAIL'],
+      ['the SQL injection is found', /SQL injection|injection/i.test(report)],
+      ['the missing authorization (IDOR) is found', /IDOR|authori[sz]ation|another user|other users|any user/i.test(report)],
+      ['they are rated Blocker', /Blocker/.test(report)],
+      ['no project file was modified (read-only)', unchanged(dir)],
+    ],
+  },
+  'db-reviewer': {
+    agent: 'senior-ai:db-reviewer',
+    setup: dir => {
+      fs.mkdirSync(path.join(dir, 'migrations'));
+      fs.writeFileSync(
+        path.join(dir, 'migrations', '001_create_notes.sql'),
+        'CREATE TABLE users (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, email text NOT NULL UNIQUE);\nCREATE TABLE notes (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, title text NOT NULL);\n',
+      );
+      fs.writeFileSync(
+        path.join(dir, 'migrations', '002_add_owner.sql'),
+        [
+          '-- Notes now belong to a user.',
+          'ALTER TABLE notes ADD COLUMN owner_id bigint NOT NULL;',
+          'ALTER TABLE notes ADD CONSTRAINT notes_owner_fk FOREIGN KEY (owner_id) REFERENCES users (id);',
+          'CREATE INDEX notes_title_idx ON notes (title);',
+          'ALTER TABLE notes RENAME COLUMN title TO name;',
+          '',
+        ].join('\n'),
+      );
+    },
+    prompt: `Review migrations/002_add_owner.sql before it runs in production. The notes table has about 5 million rows and constant traffic; the current server code reads and writes notes.title. ${NON_INTERACTIVE}`,
+    checks: (dir, report) => [
+      ['the verdict is FAIL', verdict(report) === 'FAIL'],
+      ['NOT NULL without default is found', /NOT NULL/.test(report) && /default|backfill/i.test(report)],
+      ['the blocking index build is found', /CONCURRENTLY/.test(report)],
+      ['the foreign-key scan under lock is found', /NOT VALID|VALIDATE CONSTRAINT/.test(report)],
+      ['the rename breaking running code is found', /rename/i.test(report) && /title/.test(report)],
+      ['no project file was modified (read-only)', unchanged(dir)],
+    ],
+  },
   architect: {
     agent: 'senior-ai:architect',
     prompt: `Notes are lost when the server restarts. Choose how to persist them for a small team app, record the decision, and document the architecture. ${NON_INTERACTIVE}`,

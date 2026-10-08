@@ -1,6 +1,9 @@
 [
   "a11y-auditor",
+  "backend-reviewer",
+  "backend-security",
   "code-auditor",
+  "db-reviewer",
   "frontend-security",
   "perf-auditor",
   "visual-reviewer"

@@ -17,8 +17,13 @@ senior-ai organizes agents into departments. **Makers** can edit files; **checke
 | Frontend | `visual-reviewer` | Rendered component vs. reference design image | no | — |
 | Frontend | `perf-auditor` | Core Web Vitals, bundle size, rendering, measured with Lighthouse and DevTools | no | — |
 | Frontend | `frontend-security` | XSS, unsafe HTML, token storage, redirects, third-party scripts, secrets in client code | no | — |
+| Backend | `api-developer` | Endpoints, services, validation, auth wiring, integrations, unit and e2e tests | yes | backend checkers |
+| Backend | `db-engineer` | Schema, safe migrations, indexes, query optimization, seed data | yes | `db-reviewer` |
+| Backend | `backend-reviewer` | Backend code review: structure, API contracts, errors, transactions, tests | no | — |
+| Backend | `db-reviewer` | Schema, indexes, N+1 queries, migrations that lock, break code or lose data | no | — |
+| Backend | `backend-security` | Injection, authentication, object-level authorization (IDOR), data exposure, secrets | no | — |
 
-Backend (NestJS, PostgreSQL) and DevOps (Docker, Vercel, CI) are the next departments. Until they exist, the orchestrator handles their tasks itself with the matching skills, or asks you.
+DevOps (Docker, Vercel, CI) is the next department. Until it exists, the orchestrator handles its tasks itself with the matching skills, or asks you.
 
 ## How a goal flows
 
@@ -67,6 +72,8 @@ Skills are instructions an agent loads when the topic comes up.
 | `a11y` | WCAG 2.2 AA build rules and audit method |
 | `i18n` | Translatable text, ICU messages, locale formatting, right-to-left |
 | `web-performance` | Core Web Vitals, bundles, loading, images, rendering, measurement |
+| `nestjs` | NestJS structure, validation, configuration, guards, errors, testing (version-aware) |
+| `postgresql` | Schema design, indexes, queries, safe migrations on live data |
 
 ## Autonomy
 
