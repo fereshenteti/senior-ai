@@ -6,7 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/inject-rules.sh\"",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/inject-rules.mjs"],
             "timeout": 10
           }
         ]
@@ -16,7 +17,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/check-update.sh\" --tool claude",
+            "command": "node",
+            "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/check-update.mjs", "--tool", "claude"],
             "timeout": 10
           }
         ]

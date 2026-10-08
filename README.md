@@ -4,11 +4,24 @@ One set of general-purpose AI coding rules, skills and agents for **Claude Code*
 
 Built for pixel-perfect frontend work (Angular, SCSS, design tokens, Storybook) with code-review and accessibility standards that apply to every project. Projects only add a short `AGENTS.md` with their own facts.
 
+- [Requirements](#requirements)
 - [Claude Code](#claude-code)
 - [Mistral Vibe](#mistral-vibe)
 - [Installer options](#installer-options)
 - [What's inside](#whats-inside)
 - [Maintaining senior-ai](#maintaining-senior-ai)
+
+---
+
+## Requirements
+
+Works on **macOS, Linux and Windows**.
+
+- **Node.js 18 or later**: the installer, the hooks and the `setup-project` and `visual-check` skills run on Node.
+- **git**: to clone this repo (not needed for the Claude Code plugin commands).
+- **Claude Code** and/or **Mistral Vibe**.
+
+In the commands below, macOS and Linux use `./install.sh`; Windows uses `.\install.cmd` (PowerShell or Command Prompt). Both take the same options.
 
 ---
 
@@ -30,14 +43,22 @@ claude plugin install senior-ai@feres
 
 **Option 2: installer** (useful when you also install Vibe)
 
+Open a terminal in your home folder (or wherever you want to keep senior-ai), then:
+
 ```bash
-git clone https://github.com/fereshenteti/senior-ai.git ~/senior-ai
+git clone https://github.com/fereshenteti/senior-ai.git
 ```
 ```bash
-cd ~/senior-ai
+cd senior-ai
 ```
+
+macOS / Linux:
 ```bash
 ./install.sh --tool claude
+```
+Windows:
+```powershell
+.\install.cmd --tool claude
 ```
 
 Then add the MCP servers with the commands in [`adapters/claude/mcp.md`](adapters/claude/mcp.md).
@@ -86,21 +107,29 @@ The `ui-builder` agent implements the component with tokens, writes its Storyboo
 
 ## Mistral Vibe
 
-Vibe cannot install plugins from GitHub, so the installer copies the skills, agents, prompts and global rules into `~/.vibe`.
+Vibe cannot install plugins from GitHub, so the installer copies the skills, agents, prompts and global rules into Vibe's folder: `~/.vibe` (`%USERPROFILE%\.vibe` on Windows, or `VIBE_HOME` if you set it).
 
 ### Install
 
+Open a terminal in your home folder (or wherever you want to keep senior-ai), then:
+
 ```bash
-git clone https://github.com/fereshenteti/senior-ai.git ~/senior-ai
+git clone https://github.com/fereshenteti/senior-ai.git
 ```
 ```bash
-cd ~/senior-ai
+cd senior-ai
 ```
+
+macOS / Linux:
 ```bash
 ./install.sh --tool vibe
 ```
+Windows:
+```powershell
+.\install.cmd --tool vibe
+```
 
-Keep the `~/senior-ai` folder: updates are pulled into it and installed from it.
+Keep the `senior-ai` folder: updates are pulled into it and installed from it.
 
 Then:
 1. **MCP servers:** merge [`adapters/vibe/config.example.toml`](adapters/vibe/config.example.toml) into `~/.vibe/config.toml`.
@@ -108,16 +137,19 @@ Then:
 
 ### Update
 
-Updates are never installed automatically. While GitHub has a newer version, Vibe tells you after an answer, at most once a day. To update:
+Updates are never installed automatically. While GitHub has a newer version, Vibe tells you after an answer, at most once a day, including the folder to update from. In a terminal in your `senior-ai` folder:
 
-```bash
-cd ~/senior-ai
-```
 ```bash
 git pull
 ```
+
+Then macOS / Linux:
 ```bash
 ./install.sh --tool vibe
+```
+Windows:
+```powershell
+.\install.cmd --tool vibe
 ```
 
 ### Set up a project
@@ -144,16 +176,16 @@ vibe --agent ui-builder
 
 ## Installer options
 
-`./install.sh` without options asks which tool to install for. All options:
+`./install.sh` (macOS/Linux) and `.\install.cmd` (Windows) both start `install.mjs` and take the same options. Without options, they ask which tool to install for.
 
 | Option | Effect |
 |---|---|
 | `--tool claude` / `--tool vibe` / `--tool both` | Choose the tool without being asked |
 | `--dry-run` | Show what would happen, change nothing |
-| `--link` | Use this folder directly instead of a copy: Vibe gets symlinks, Claude Code reads the plugin from this folder. For working on senior-ai itself; the folder must stay in place |
+| `--link` | Use this folder directly instead of a copy: Vibe gets links (on Windows, folders become junctions; files are copied unless Developer Mode allows symlinks), Claude Code reads the plugin from this folder. For working on senior-ai itself; the folder must stay in place |
 | `--uninstall` | Remove everything senior-ai installed and restore backups |
 
-The installer is safe to re-run. Files it replaces in `~/.vibe` are moved to `~/.senior-ai/backups/` and restored on `--uninstall`; your own `~/.vibe/AGENTS.md` and `~/.vibe/hooks.toml` get a marked block instead of being replaced.
+The installer is safe to re-run. Files it replaces in Vibe's folder are moved to `~/.senior-ai/backups/` and restored on `--uninstall`; your own `~/.vibe/AGENTS.md` and `~/.vibe/hooks.toml` get a marked block instead of being replaced.
 
 ---
 
@@ -164,10 +196,11 @@ The installer is safe to re-run. Files it replaces in `~/.vibe` are moved to `~/
 | `AGENTS.md` | both tools | Global rules; a project `AGENTS.md` overrides them |
 | `skills/` | both tools | Agent Skills (`SKILL.md` + `references/` loaded on demand + `scripts/`), including `setup-project` and its `AGENTS.project.md` template |
 | `prompts/` | both tools | System prompts of the four agents |
-| `hooks/check-update.sh` | both tools | Update notice: compares the installed version with GitHub (at most once a day) |
+| `install.mjs`, `install.sh`, `install.cmd` | both tools | The installer (Node), and its launchers for macOS/Linux and Windows |
+| `hooks/check-update.mjs` | both tools | Update notice: compares the installed version with GitHub (at most once a day) |
 | `adapters/vibe/` | Vibe | Agent profiles (`.toml`), MCP config example |
 | `adapters/claude/` | Claude Code | Agent frontmatter, MCP commands |
-| `.claude-plugin/`, `hooks/`, `agents/` | Claude Code | Plugin and `feres` marketplace manifests, the hook that injects `AGENTS.md`, and the agents built by `scripts/build-claude-agents.sh` |
+| `.claude-plugin/`, `hooks/`, `agents/` | Claude Code | Plugin and `feres` marketplace manifests, the hook that injects `AGENTS.md` (`hooks/inject-rules.mjs`), and the agents built by `scripts/build-claude-agents.mjs` |
 
 ### Skills
 | Skill | Purpose |
@@ -199,13 +232,14 @@ The installer is safe to re-run. Files it replaces in `~/.vibe` are moved to `~/
 - Keep `SKILL.md` short and move detail into `references/*.md`, loaded only when relevant.
 - One skill per folder directly under `skills/`; Vibe does not discover nested skill folders.
 - Add a new agent: write `prompts/<name>.md`, then `adapters/vibe/agents/<name>.toml` and `adapters/claude/agents/<name>.md` (frontmatter only).
-- After changing `prompts/` or `adapters/claude/agents/`, run `scripts/build-claude-agents.sh` and commit the generated `agents/`.
-- Test unpushed changes in Claude Code with `claude --plugin-dir .`, and in Vibe with `./install.sh --tool vibe`.
+- After changing `prompts/` or `adapters/claude/agents/`, run `node scripts/build-claude-agents.mjs` and commit the generated `agents/`.
+- Test unpushed changes in Claude Code with `claude --plugin-dir .`, and in Vibe by re-running the installer with `--tool vibe`.
+- Write scripts in Node, not bash or PowerShell, so they run on every OS. Hooks are started as `node <script>`.
 
 ### Releasing
 
 ```bash
-scripts/release.sh 1.3.0
+node scripts/release.mjs 1.3.0
 ```
 
 It sets the version in both `.claude-plugin/` manifests, rebuilds `agents/` and validates the plugin. Then commit and push; every machine is told about the new version and how to update.

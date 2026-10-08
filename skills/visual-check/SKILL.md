@@ -15,18 +15,16 @@ Compares the rendered `AllStates` story of a component with its reference image 
 - Output: `.visual-check/` in the project root (add it to `.gitignore`).
 
 ## Setup (once per project)
-1. The project needs `playwright`, `pixelmatch` and `pngjs` as dev dependencies. If missing, **ask the user** before running:
-   `npm i -D playwright pixelmatch pngjs && npx playwright install chromium`
+1. The project needs `playwright`, `pixelmatch` and `pngjs` as dev dependencies. If missing, **ask the user** before running these two commands:
+   `npm i -D playwright pixelmatch pngjs`
+   `npx playwright install chromium`
 2. Storybook must be running (`npm run storybook`, default `http://localhost:6006`). Start it in the background if it is not running.
 
 ## Run
 The script is in this skill's folder at `scripts/visual-check.mjs`. In Claude Code the folder is the base directory shown when the skill loads;
-in Vibe it is `~/.vibe/skills/visual-check/`. Run it **from the project root**:
-```bash
-node <skill-dir>/scripts/visual-check.mjs \
-  --story components-button--all-states \
-  --ref design/screens/button.png \
-  --scale 1
+in Vibe it is `~/.vibe/skills/visual-check/` (`%USERPROFILE%\.vibe\skills\visual-check\` on Windows). Run it **from the project root**, on one line so it works in every shell (bash, PowerShell, cmd):
+```
+node <skill-dir>/scripts/visual-check.mjs --story components-button--all-states --ref design/screens/button.png --scale 1
 ```
 Useful options: `--url` (Storybook URL), `--selector '.sheet'` (capture one element), `--max-mismatch 0.5` (pass limit in %), `--threshold 0.1` (color tolerance).
 Exit code 0 = pass, 1 = differences above the limit, 2 = setup problem.

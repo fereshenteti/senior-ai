@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Renders a Storybook story (or any URL) and pixel-compares it with a reference image.
 // Dependencies are resolved from the project in the current working directory:
-//   npm i -D playwright pixelmatch pngjs && npx playwright install chromium
+//   npm i -D playwright pixelmatch pngjs
+//   npx playwright install chromium
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -86,7 +87,7 @@ async function loadDeps() {
   const missing = [[pw, 'playwright'], [pm, 'pixelmatch'], [png, 'pngjs']].filter(([m]) => !m).map(([, n]) => n);
   if (missing.length) {
     fail(`Missing packages in this project: ${missing.join(', ')}\n` +
-      'Install them (ask the user first):\n  npm i -D playwright pixelmatch pngjs && npx playwright install chromium');
+      'Install them (ask the user first):\n  npm i -D playwright pixelmatch pngjs\n  npx playwright install chromium');
   }
   return {
     chromium: pw.chromium ?? pw.default?.chromium,
