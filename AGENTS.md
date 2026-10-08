@@ -25,3 +25,10 @@ When delegation is available, use the read-only subagents instead of reviewing y
 - `a11y-auditor`: accessibility audit against `a11y`.
 - `visual-reviewer`: compares rendered components with reference designs.
 If delegation is not available, apply the same skills yourself and say that the review was self-performed.
+
+**Model choice when delegating:** pick the cheapest model that can do the task well, for every delegation (to these subagents or any other):
+- **Small, fast model** (e.g. Haiku): searching, listing, reading or summarizing files, mechanical checks.
+- **Mid-tier model** (e.g. Sonnet): code reviews, accessibility and visual audits, standard implementation.
+- **Top model** (e.g. Opus): complex reasoning, architecture decisions, hard debugging, or a retry after a cheaper model's result was not good enough.
+
+In Claude Code, set the model on the delegation itself. Where the tool cannot choose a model per delegation (Mistral Vibe), the subagent runs on the model configured for it.
