@@ -9,7 +9,7 @@ const PLUGIN_DIR = 'dist/claude';
 const CLAUDE_MODELS = { session: 'inherit', small: 'haiku', mid: 'sonnet', top: 'opus' };
 const READ_ONLY_TOOLS = 'Read, Grep, Glob, Bash';
 
-function agentFile(agent) {
+export function agentFile(agent) {
   const lines = ['---', `name: ${agent.name}`, `description: ${agent.description}`];
   if (agent.role === 'checker') lines.push(`tools: ${READ_ONLY_TOOLS}`);
   lines.push(`model: ${CLAUDE_MODELS[agent.model]}`, '---', '');
@@ -54,13 +54,14 @@ export function buildClaude(outRoot = REPO) {
 }
 
 // hooks.json in exec form (`node <script>`): no shell, so it runs the same on every OS.
-function claudeHooks() {
+// `scriptsDir` is how Claude Code finds the scripts: the plugin root, or the project's copy.
+export function claudeHooks(scriptsDir = '${CLAUDE_PLUGIN_ROOT}/hooks', extraArgs = []) {
   const byEvent = {};
   for (const hook of readHooks().filter(hook => hook.claude)) {
     const { event, matcher, timeout } = hook.claude;
     const entry = {
       ...(matcher ? { matcher } : {}),
-      hooks: [{ type: 'command', command: 'node', args: [`\${CLAUDE_PLUGIN_ROOT}/hooks/${hook.script}`, '--tool', 'claude'], timeout }],
+      hooks: [{ type: 'command', command: 'node', args: [`${scriptsDir}/${hook.script}`, '--tool', 'claude', ...extraArgs], timeout }],
     };
     (byEvent[event] ??= []).push(entry);
   }

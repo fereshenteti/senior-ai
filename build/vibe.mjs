@@ -18,7 +18,7 @@ const BUILTIN_SUBAGENTS = ['explore'];
 const tomlList = values => `[${values.map(value => JSON.stringify(value)).join(', ')}]`;
 
 // One Vibe profile per role an agent can play.
-function vibeProfiles(agents) {
+export function vibeProfiles(agents) {
   const profiles = [];
   for (const agent of agents) {
     if (agent.entry !== 'subagent') profiles.push({ agent, name: agent.name, kind: 'main' });
@@ -27,7 +27,7 @@ function vibeProfiles(agents) {
   return profiles;
 }
 
-function profileToml(profile, subagentNames) {
+export function profileToml(profile, subagentNames) {
   const { agent, name, kind } = profile;
   const lines = [
     `# Generated from ${agent.file.split(path.sep).join('/')}; edit that file, not this one.`,
@@ -77,7 +77,7 @@ const SUBAGENT_MAKER_NOTE = [
   '',
 ].join('\n');
 
-function promptFor(profile, profiles) {
+export function promptFor(profile, profiles) {
   const { agent, kind } = profile;
   if (kind === 'main') return agent.body + mainNote(profiles);
   if (agent.role === 'maker') return agent.body + SUBAGENT_MAKER_NOTE;

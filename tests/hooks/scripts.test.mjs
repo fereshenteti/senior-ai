@@ -11,11 +11,12 @@ import { fakeCli, tempDir } from '../helpers.mjs';
 const REPO = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const HOOKS = path.join(REPO, 'dist', 'claude', 'hooks');
 
-function hook(script, event, { tool = 'claude', env = {} } = {}) {
-  const result = spawnSync(process.execPath, [path.join(HOOKS, script), '--tool', tool], {
+function hook(script, event, { tool = 'claude', env = {}, args = [], cwd } = {}) {
+  const result = spawnSync(process.execPath, [path.join(HOOKS, script), '--tool', tool, ...args], {
     input: JSON.stringify(event),
     encoding: 'utf8',
     env: { ...process.env, ...env },
+    cwd,
   });
   assert.equal(result.status, 0, result.stderr);
   return result.stdout.trim() ? JSON.parse(result.stdout) : null;
@@ -174,4 +175,32 @@ test('Vibe report check: checker output without a verdict', () => {
     assert.equal(hook('report-check.mjs', { tool_name: 'task', tool_input: { agent: 'db-reviewer' }, tool_output_text: decorated }, { tool: 'vibe' }), null, decorated);
   }
   assert.ok(hook('report-check.mjs', { tool_name: 'task', tool_input: { agent: 'db-reviewer' }, tool_output_text: 'Verdict pending, PASSING tests' }, { tool: 'vibe' }));
+});
+
+test("session context in a project's copy: the status board only (the rules are in AGENTS.md)", () => {
+  const project = tempDir();
+  const env = { CLAUDE_PROJECT_DIR: project, CLAUDE_PLUGIN_ROOT: path.join(REPO, 'dist', 'claude') };
+  assert.equal(hook('session-context.mjs', {}, { env, args: ['--project'] }), null);
+  fs.mkdirSync(path.join(project, '.senior-ai'));
+  fs.writeFileSync(path.join(project, '.senior-ai', 'status.md'), '# Status\n| S-001 | Login | in progress |');
+  const context = hook('session-context.mjs', {}, { env, args: ['--project'] }).hookSpecificOutput.additionalContext;
+  assert.match(context, /^# Project status/);
+  assert.doesNotMatch(context, /engineering rules|setup-project/);
+});
+
+test("machine-wide Vibe hooks step aside where Vibe runs a trusted project's own copy", () => {
+  const project = tempDir();
+  const vibeHome = tempDir();
+  const env = { VIBE_HOME: vibeHome };
+  const rmEvent = { tool_name: 'bash', tool_input: { command: 'rm -rf ~' } };
+  const trust = list => fs.writeFileSync(path.join(vibeHome, 'trusted_folders.toml'), `trusted = ${JSON.stringify(list)}\nuntrusted = []\n`);
+  fs.mkdirSync(path.join(project, '.senior-ai', 'system', 'hooks'), { recursive: true });
+  fs.mkdirSync(path.join(project, '.vibe'));
+  fs.writeFileSync(path.join(project, '.vibe', 'hooks.toml'), 'command = "node \\".senior-ai/system/hooks/guard.mjs\\" --tool vibe --project"\n');
+
+  trust([]);
+  assert.equal(hook('guard.mjs', rmEvent, { tool: 'vibe', env, cwd: project }).decision, 'deny', 'untrusted: Vibe ignores the project hooks');
+  trust([fs.realpathSync(project)]);
+  assert.equal(hook('guard.mjs', rmEvent, { tool: 'vibe', env, cwd: project }), null, 'trusted: the project copy guards instead');
+  assert.equal(hook('guard.mjs', rmEvent, { tool: 'vibe', env, cwd: project, args: ['--project'] }).decision, 'deny', 'the project copy itself runs');
 });

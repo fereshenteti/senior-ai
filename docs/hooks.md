@@ -36,3 +36,4 @@ Only the project's own tools are used (`node_modules/.bin/prettier` and `node_mo
 - Source: `hooks/` in this repo; `hooks/registry.json` says which hook runs where.
 - Claude Code: generated into the plugin's `hooks/hooks.json`.
 - Vibe: a marked block in `~/.vibe/hooks.toml`, scripts in `~/.vibe/senior-ai/`.
+- A project's own copy (after `setup-project`): scripts in `.senior-ai/system/hooks/`, run by `.claude/settings.json` and the marked block in `.vibe/hooks.toml`. There, Claude Code's plugin is off, and the machine-wide Vibe hooks step aside once Vibe trusts the folder, so each hook runs once.

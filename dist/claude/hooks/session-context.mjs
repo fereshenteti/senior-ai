@@ -2,11 +2,13 @@
 // senior-ai :: session context (Claude Code, at session start, resume, /clear and compaction)
 // Injects the global senior-ai rules (AGENTS.md at the plugin root) and the project's status
 // board (.senior-ai/status.md), so every session starts with the rules and the current state.
+// A project's own copy (--project) adds the status board only: its rules are in the project's
+// AGENTS.md, which CLAUDE.md imports.
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runHook } from './lib.mjs';
+import { isProjectCopy, runHook } from './lib.mjs';
 
 const MAX_STATUS_CHARS = 4000;
 const SETUP_HINT =
@@ -16,18 +18,20 @@ const SETUP_HINT =
 const readIfExists = file => (fs.existsSync(file) ? fs.readFileSync(file, 'utf8').trim() : '');
 
 await runHook(() => {
+  const project = isProjectCopy();
   const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT || path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-  const rules = readIfExists(path.join(pluginRoot, 'AGENTS.md'));
-  if (!rules) return null;
+  const rules = project ? '' : readIfExists(path.join(pluginRoot, 'AGENTS.md'));
+  if (!rules && !project) return null;
   const projectRoot = process.env.CLAUDE_PROJECT_DIR || process.cwd();
-  const parts = [rules];
+  const parts = rules ? [rules] : [];
 
   const status = readIfExists(path.join(projectRoot, '.senior-ai', 'status.md'));
   if (status) {
     const shown = status.length > MAX_STATUS_CHARS ? `${status.slice(0, MAX_STATUS_CHARS)}\n[…truncated: read .senior-ai/status.md for the rest]` : status;
     parts.push(`# Project status (.senior-ai/status.md)\n\n${shown}`);
   }
-  if (!['AGENTS.md', 'CLAUDE.md'].some(name => fs.existsSync(path.join(projectRoot, name)))) parts.push(SETUP_HINT);
+  if (!project && !['AGENTS.md', 'CLAUDE.md'].some(name => fs.existsSync(path.join(projectRoot, name)))) parts.push(SETUP_HINT);
+  if (!parts.length) return null;
 
   return { hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext: parts.join('\n\n') } };
 });

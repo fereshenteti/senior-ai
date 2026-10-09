@@ -141,7 +141,19 @@ It looks at the project, then asks you, in one message:
 3. whether the project memory (`.senior-ai/`) is **shared in git** with the team or **kept on your machine** (added to `.gitignore`);
 4. whether your Claude sessions should **start as the orchestrator** (default: no).
 
-It then writes a project `AGENTS.md` with the facts it found (stack, commands, design source), creates the project memory, and for Claude Code turns senior-ai on for every teammate who opens the project. Commit the files it lists.
+It then copies the whole system into the project, in `.senior-ai/system/` (agents, skills, rules and hooks), and generates the files Claude Code and Vibe read from it (`.claude/`, `.vibe/`). It also writes a project `AGENTS.md` with the facts it found (stack, commands, design source) and the team rules, and creates the project memory. Commit everything it lists: every teammate then gets the same team, without installing anything else.
+
+In this project, senior-ai's machine-wide install steps aside, so nothing runs twice. In Vibe, trust the folder when asked; Vibe ignores a project's `.vibe/` folder until you do.
+
+### Change the team's system
+
+The copy in `.senior-ai/system/` belongs to the project: improve an agent, a skill or a rule there, then regenerate the tool files and commit both:
+
+```bash
+node .senior-ai/system/build/project.mjs
+```
+
+Add `--check` in CI to catch a forgotten regeneration. See `.senior-ai/system/README.md` in the project.
 
 ---
 
@@ -152,10 +164,12 @@ It then writes a project `AGENTS.md` with the facts it found (stack, commands, d
 In a session you already have open:
 
 ```
-/senior-ai:orchestrate Users need to delete notes they no longer want
+/orchestrate Users need to delete notes they no longer want
 ```
 
-or mention the orchestrator: `@agent-senior-ai:orchestrator Users need to delete notes…`
+or mention the orchestrator: `@agent-orchestrator Users need to delete notes…`
+
+These are the names in a project set up with senior-ai. Outside one, Claude Code uses the plugin's names: `/senior-ai:orchestrate`, `@agent-senior-ai:orchestrator`.
 
 To start a new session as the orchestrator:
 
@@ -171,10 +185,10 @@ The orchestrator writes the story and its acceptance criteria in `.senior-ai/sto
 
 | To… | Claude Code (in a session) | Vibe |
 |---|---|---|
-| choose a technology or document the architecture | `@agent-senior-ai:architect …` | ask the orchestrator to involve the architect |
-| build a UI component from a design | `@agent-senior-ai:ui-builder …` | `Shift+Tab` to `ui-builder` |
-| review your changes | `@agent-senior-ai:code-auditor review my changes` | *"Use the code-auditor subagent to review my changes"* |
-| test a story's acceptance criteria | `@agent-senior-ai:qa-engineer test S-003` | ask the orchestrator to involve QA |
+| choose a technology or document the architecture | `@agent-architect …` | ask the orchestrator to involve the architect |
+| build a UI component from a design | `@agent-ui-builder …` | `Shift+Tab` to `ui-builder` |
+| review your changes | `@agent-code-auditor review my changes` | *"Use the code-auditor subagent to review my changes"* |
+| test a story's acceptance criteria | `@agent-qa-engineer test S-003` | ask the orchestrator to involve QA |
 
 Plain words work too: *"Use the architect agent to choose a database for this project."*
 
@@ -209,6 +223,14 @@ Windows:
 ```powershell
 .\install.cmd --tool vibe
 ```
+
+**A project's copy** is updated separately, when the team chooses. First get the new version on your machine as above, then in the project:
+
+```bash
+node .senior-ai/system/build/project.mjs --update
+```
+
+It takes senior-ai's changes and keeps the files your team changed. When senior-ai changed one of them too, your version stays and the new one is saved next to it as `<file>.senior-ai-new`, so you can merge them. Review the result with `git diff`, then commit.
 
 ---
 

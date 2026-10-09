@@ -9,6 +9,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isProjectCopy, projectCopyRunsInstead } from './lib.mjs';
 
 // The GitHub API serves the current file; raw.githubusercontent.com can lag a push by several minutes.
 const LATEST_URL = 'https://api.github.com/repos/fereshenteti/senior-ai/contents/senior-ai.json';
@@ -26,8 +27,10 @@ const isFresh = file => {
   }
 };
 
-// Vibe installs record the version in VERSION; the Claude plugin reads its own manifest.
+// Vibe installs record the version in VERSION; the Claude plugin reads its own manifest; a
+// project's copy has senior-ai.json next to its hooks folder.
 function installedVersion() {
+  if (isProjectCopy()) return JSON.parse(fs.readFileSync(path.join(HERE, '..', 'senior-ai.json'), 'utf8')).version;
   const versionFile = path.join(HERE, 'VERSION');
   if (fs.existsSync(versionFile)) return readText(versionFile);
   return JSON.parse(fs.readFileSync(path.join(HERE, '..', '.claude-plugin', 'plugin.json'), 'utf8')).version;
@@ -72,7 +75,7 @@ function vibeUpdateCommand() {
 
 async function main() {
   const tool = process.argv[2] === '--tool' ? process.argv[3] : '';
-  if (tool !== 'claude' && tool !== 'vibe') return;
+  if ((tool !== 'claude' && tool !== 'vibe') || projectCopyRunsInstead()) return;
 
   // Vibe has no session-start hook and does not always send a session id, so it is throttled by time.
   const vibeNotified = path.join(STATE_DIR, 'vibe-notified');
@@ -82,6 +85,18 @@ async function main() {
   const latest = await latestVersion();
   if (!installed || !latest || !isNewer(latest, installed)) return;
 
+  if (isProjectCopy()) {
+    const notice =
+      `senior-ai ${latest} is available (this project's copy is ${installed}). To update the copy, get the new ` +
+      'version on this machine (`claude plugin marketplace update feres`, or git pull in your senior-ai folder), ' +
+      'then run in the project: node .senior-ai/system/build/project.mjs --update';
+    if (tool === 'vibe') {
+      fs.mkdirSync(STATE_DIR, { recursive: true });
+      fs.writeFileSync(vibeNotified, '');
+    }
+    console.log(JSON.stringify(tool === 'claude' ? { systemMessage: notice } : { system_message: notice }));
+    return;
+  }
   const notice = `senior-ai ${latest} is available (you have ${installed}).`;
   if (tool === 'claude') {
     const systemMessage = `${notice} To update, run in a terminal: claude plugin update senior-ai@feres, then restart Claude Code.`;
