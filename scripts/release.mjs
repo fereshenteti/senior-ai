@@ -27,13 +27,9 @@ const run = (command, args) => {
 };
 run(process.execPath, [path.join(REPO, 'build', 'index.mjs')]);
 run('claude', ['plugin', 'validate', '.']);
-run(process.execPath, [path.join(REPO, 'scripts', 'package-plugin.mjs')]);
 
 console.log(`
 Next:
   git commit -am "Release ${version}"
-  git tag -a v${version} -m "senior-ai ${version}"
-  git push origin main v${version}
-  gh release create v${version} out/senior-ai.plugin --title "senior-ai ${version}" --notes "…"
-The .plugin file is what Chat and Cowork users install.
+  git push
 Each machine is then told about ${version} within a day and shown how to update.`);

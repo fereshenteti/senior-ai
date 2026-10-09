@@ -5,7 +5,7 @@ An AI engineering team for **Claude Code** and **Mistral Vibe**, on **macOS, Lin
 You describe what you want; a product-manager agent turns it into user stories, an architect decides how to build it, department agents build it, read-only reviewers check it in a loop until it passes, and a QA agent verifies the acceptance criteria end to end. Hooks keep it safe: no secrets in files, no destructive commands, and nothing is committed, pushed or deployed without your approval.
 
 - [What you get](#what-you-get)
-- [Install](#install) (including [Chat and Cowork](#claude-desktop-chat-and-cowork))
+- [Install](#install)
 - [Set up a project](#set-up-a-project)
 - [Use](#use)
 - [Update](#update)
@@ -125,20 +125,6 @@ claude plugin install senior-ai@feres
 ```
 
 This installs senior-ai itself, without the extras.
-
-### Claude Desktop: Chat and Cowork
-
-The Code tab of the Claude Desktop app uses the installation above. The **Chat** and **Cowork** tabs don't read your machine's setup: they use plugins added to your claude.ai account.
-
-1. Download **[senior-ai.plugin](https://github.com/fereshenteti/senior-ai/releases/latest/download/senior-ai.plugin)** from the latest release.
-2. In the Claude Desktop app, open **Cowork**, start a chat, and send the file.
-3. Press **Accept** on the plugin preview.
-
-senior-ai is then part of your claude.ai account, in Chat and Cowork; you'll find it under **Customize**. Type `/senior-ai:` to see its skills, for example `/senior-ai:orchestrate` or `/senior-ai:architecture`.
-
-What works there: all the **skills** and the **rules**; the **agents** are available but used less, since Chat and Cowork work in one conversation. The **safety hooks** don't run there (they're a Claude Code feature), and Chat and Cowork don't tell you about updates: to update, download the new file and send it again.
-
-On machines where senior-ai is also installed for Claude Code, the local installation takes precedence over the account's copy, so nothing loads twice.
 
 ---
 
