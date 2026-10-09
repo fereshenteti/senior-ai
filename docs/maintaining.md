@@ -91,4 +91,4 @@ node scripts/measure-context.mjs
 node scripts/release.mjs 1.1.0
 ```
 
-It sets the version in `senior-ai.json`, regenerates everything and validates the Claude plugin. Commit and push: every machine is told about the new version (Claude Code at session start, Vibe at most once a day) with the command to update. Claude Code only installs a change when the version number goes up.
+It sets the version in `senior-ai.json`, regenerates everything, validates the Claude plugin and packages `out/senior-ai.plugin` (the file Chat and Cowork users install; `node scripts/package-plugin.mjs` does that step alone). Then commit, tag `v<version>`, push both, and create the GitHub Release with `out/senior-ai.plugin` attached: the README's download link always points at the latest release's file. Every machine is told about the new version (Claude Code at session start, Vibe at most once a day) with the command to update. Claude Code only installs a change when the version number goes up.
