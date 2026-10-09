@@ -150,6 +150,7 @@ async function install(options, prompter) {
   for (const tool of detected) {
     const how = tool.via && tool.via !== 'command' ? ` (${tool.via})` : '';
     say(`  ${tool.installed ? '✓' : '·'} ${tool.name}${tool.installed ? ` ${tool.version}${how}` : ': not found'}`);
+    if (tool.outdated) say(`    ! ${tool.name} ${tool.minVersion} or newer is needed for the agents to work. Upgrade with: ${tool.upgrade}`);
   }
   if (!detected.some(tool => tool.installed)) {
     say('\nNo supported AI tool found. Install one of them, then run this installer again:');

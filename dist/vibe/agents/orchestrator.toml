@@ -1,5 +1,6 @@
 # Generated from departments/core/agents/orchestrator.md; edit that file, not this one.
 # Main agent: pick it with Shift+Tab, or start with `vibe --agent orchestrator`
+description = "Product manager and orchestrator. Turns a goal or feature request into user stories with acceptance criteria, gets the architect's approach, splits the work into tasks, delegates them to the department agents with review loops, runs QA acceptance and reports. Use for any goal larger than a single small change, or when the user asks to plan, coordinate or build a feature."
 system_prompt_id = "orchestrator"
 
 # Delegating to senior-ai's subagents doesn't ask each time; what they do still follows your approvals.

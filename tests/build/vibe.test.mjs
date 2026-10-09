@@ -34,3 +34,19 @@ test('subagent makers hand the review back; checkers are read-only', () => {
   assert.doesNotMatch(read('prompts/db-reviewer.md'), /Ready for review by:/);
   assert.match(read('agents/db-reviewer.toml'), /disabled_tools = \["edit", "write_file"\]/);
 });
+
+test("every profile has a description (Vibe's newer engine drops subagents without one)", () => {
+  for (const name of profiles) assert.match(read(`agents/${name}.toml`), /^description = ".+"$/m, name);
+});
+
+test('main agents know both ways to delegate in Vibe', () => {
+  for (const main of profiles.filter(name => !isSubagent(name))) {
+    const prompt = read(`prompts/${main}.md`);
+    assert.match(prompt, /`task` tool/, main);
+    assert.match(prompt, /tools\.subagent\.spawn\(\{ agentType/, main);
+  }
+});
+
+test('the orchestrator sends reviews to the checkers without needing its skill', () => {
+  assert.match(read('prompts/orchestrator.md'), /## First, route the request[\s\S]*`frontend-security`/);
+});

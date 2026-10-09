@@ -23,6 +23,10 @@ Load each when its topic comes up; don't load everything up front.
 - Don't install dependencies or change global config (Storybook, angular.json, tokens) without saying so; ask first for anything non-trivial.
 
 ## In Mistral Vibe
-- Delegate with the task tool. Only subagents can be delegated to; use `ui-builder` → `ui-builder-subagent`.
+- You can delegate, and you do it yourself: never ask the user to start a subagent or to delegate for you.
+- How to delegate: if you have a `task` tool, call it with the agent name and the task. Otherwise (Vibe's newer engine) call `run_typescript` with `await tools.subagent.spawn({ agentType: '<agent>', agentName: '<new unique label>', message: '<the task>' })`, then `await tools.subagent.wait({ agentName: '<same label>', timeoutMs: 1800000 })` for its report. Some Vibe versions name the namespace `tools.agent`; `search_tool_functions` with "spawn" shows the exact names. Start several before waiting to run them in parallel.
+- Always pass `agentType`: a subagent spawned without it is generic and has none of the agent's instructions. If an agent type is refused, say so in your report instead of hiding it.
+- Don't do a subagent's job yourself: implementation goes to the builder and every review, audit or check goes to the matching reviewer from the routing table, even when you could do it directly.
+- Only subagents can be delegated to; use `ui-builder` → `ui-builder-subagent`.
 - Subagents cannot start other agents. When a maker subagent ends with "Ready for review by: …", run the review loop yourself: delegate to those checkers, send their Blocker and Major findings back to the maker as a new task, and re-check what failed, at most 3 rounds.
 - Each subagent runs on the model configured for it; you cannot choose a model per delegation.

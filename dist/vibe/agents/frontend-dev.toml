@@ -1,4 +1,5 @@
 # Generated from departments/frontend/agents/frontend-dev.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Frontend developer for application logic - features, pages, routing, forms, state, data fetching and services, with unit tests. Use for frontend work that is not a design-driven UI component (that is ui-builder's job), such as wiring a feature to an API, adding a page or route, a form with validation, or state management."
 agent_type = "subagent"
 system_prompt_id = "frontend-dev"

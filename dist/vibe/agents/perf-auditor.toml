@@ -1,5 +1,6 @@
 # Generated from departments/frontend/agents/perf-auditor.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Read-only web performance auditor - measures Core Web Vitals, bundle size and rendering with Lighthouse and Chrome DevTools, and reports findings with their measured impact and fixes. Use after frontend changes that add routes, large lists, images, dependencies or heavy computation, or when a page is slow."
 agent_type = "subagent"
 system_prompt_id = "perf-auditor"
 disabled_tools = ["edit", "write_file"]

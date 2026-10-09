@@ -1,4 +1,5 @@
 # Generated from departments/frontend/agents/i18n-specialist.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Internationalization specialist - makes UI text translatable, adds languages, writes ICU plural and select messages, locale-aware formatting and right-to-left support, and keeps translation files in sync. Use when a feature adds user-facing text in a multilingual project, when a language is added, or to find and fix hard-coded text."
 agent_type = "subagent"
 system_prompt_id = "i18n-specialist"

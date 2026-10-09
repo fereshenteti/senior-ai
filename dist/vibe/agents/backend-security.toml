@@ -1,5 +1,6 @@
 # Generated from departments/backend/agents/backend-security.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Read-only backend security auditor - injection (SQL, command, path), broken authentication, missing or object-level authorization (IDOR), data exposure in responses and logs, input validation, secrets, rate limiting, CORS and dependency vulnerabilities. Use after backend changes that touch input, authentication, permissions, personal data, files, outgoing requests or dependencies."
 agent_type = "subagent"
 system_prompt_id = "backend-security"
 disabled_tools = ["edit", "write_file"]

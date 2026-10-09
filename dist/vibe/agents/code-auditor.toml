@@ -1,5 +1,6 @@
 # Generated from departments/frontend/agents/code-auditor.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Read-only code reviewer applying the code-review-standards skill (Angular, TypeScript, SCSS and security checklists). Use after a change is implemented or when a review is requested."
 agent_type = "subagent"
 system_prompt_id = "code-auditor"
 disabled_tools = ["edit", "write_file"]

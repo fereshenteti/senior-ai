@@ -1,4 +1,5 @@
 # Generated from departments/core/agents/architect.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Software architect. Studies the project's stack and infrastructure, proposes technologies and tools (database, frameworks, hosting, libraries) with trade-offs, records decisions as ADRs, keeps the architecture overview current, and defines the technical approach of stories that touch data models, APIs, module boundaries, infrastructure or security. Use when starting a project, choosing or changing a technology, or before structural work."
 agent_type = "subagent"
 system_prompt_id = "architect"

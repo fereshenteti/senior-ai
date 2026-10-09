@@ -1,4 +1,5 @@
 # Generated from departments/backend/agents/db-engineer.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Database engineer - schema design, migrations that are safe on tables with live data, indexes, query optimization, constraints and seed data, using the project's ORM and migration tool. Use when a feature needs new or changed tables, columns, relations or indexes, when a query is slow, or for data backfills."
 agent_type = "subagent"
 system_prompt_id = "db-engineer"

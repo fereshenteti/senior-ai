@@ -16,4 +16,4 @@ Load the `github-actions` skill (or the skill for the project's CI system), and 
 - A failing pipeline is fixed at its cause; don't skip, disable or retry-until-green a failing check without the user's agreement.
 
 ## In Mistral Vibe
-You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you runs them and sends you their findings to fix.
+You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you starts them itself and sends you their findings to fix.

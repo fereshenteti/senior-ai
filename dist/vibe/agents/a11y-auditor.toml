@@ -1,5 +1,6 @@
 # Generated from departments/frontend/agents/a11y-auditor.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Read-only WCAG 2.2 AA accessibility auditor for components, stories and pages. Use after UI changes or when an accessibility review is requested."
 agent_type = "subagent"
 system_prompt_id = "a11y-auditor"
 disabled_tools = ["edit", "write_file"]

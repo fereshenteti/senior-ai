@@ -1,5 +1,6 @@
 # Generated from departments/frontend/agents/visual-reviewer.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Read-only design QA. Compares a component's rendered Storybook AllStates story with its reference design image and lists every visible difference with its cause. Use after implementing a UI component that has a reference image."
 agent_type = "subagent"
 system_prompt_id = "visual-reviewer"
 disabled_tools = ["edit", "write_file"]

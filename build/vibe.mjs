@@ -33,7 +33,9 @@ function profileToml(profile, subagentNames) {
     `# Generated from ${agent.file.split(path.sep).join('/')}; edit that file, not this one.`,
     kind === 'main'
       ? `# Main agent: pick it with Shift+Tab, or start with \`vibe --agent ${name}\``
-      : '# Subagent: a main agent delegates to it with the task tool.',
+      : '# Subagent: a main agent delegates to it.',
+    // Vibe's newer engine drops a subagent that has no description.
+    `description = ${JSON.stringify(agent.description)}`,
   ];
   if (kind === 'subagent') lines.push('agent_type = "subagent"');
   lines.push(`system_prompt_id = "${name}"`);
@@ -57,7 +59,11 @@ function mainNote(profiles) {
   return [
     '',
     '## In Mistral Vibe',
-    '- Delegate with the task tool. Only subagents can be delegated to' + (renamed.length ? `; use ${renamed.join(', ')}.` : '.'),
+    "- You can delegate, and you do it yourself: never ask the user to start a subagent or to delegate for you.",
+    "- How to delegate: if you have a `task` tool, call it with the agent name and the task. Otherwise (Vibe's newer engine) call `run_typescript` with `await tools.subagent.spawn({ agentType: '<agent>', agentName: '<new unique label>', message: '<the task>' })`, then `await tools.subagent.wait({ agentName: '<same label>', timeoutMs: 1800000 })` for its report. Some Vibe versions name the namespace `tools.agent`; `search_tool_functions` with \"spawn\" shows the exact names. Start several before waiting to run them in parallel.",
+    "- Always pass `agentType`: a subagent spawned without it is generic and has none of the agent's instructions. If an agent type is refused, say so in your report instead of hiding it.",
+    "- Don't do a subagent's job yourself: implementation goes to the builder and every review, audit or check goes to the matching reviewer from the routing table, even when you could do it directly.",
+    '- Only subagents can be delegated to' + (renamed.length ? `; use ${renamed.join(', ')}.` : '.'),
     '- Subagents cannot start other agents. When a maker subagent ends with "Ready for review by: …", run the review loop yourself: delegate to those checkers, send their Blocker and Major findings back to the maker as a new task, and re-check what failed, at most 3 rounds.',
     '- Each subagent runs on the model configured for it; you cannot choose a model per delegation.',
     '',
@@ -67,7 +73,7 @@ function mainNote(profiles) {
 const SUBAGENT_MAKER_NOTE = [
   '',
   '## In Mistral Vibe',
-  'You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you runs them and sends you their findings to fix.',
+  'You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you starts them itself and sends you their findings to fix.',
   '',
 ].join('\n');
 

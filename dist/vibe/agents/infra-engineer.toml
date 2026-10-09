@@ -1,4 +1,5 @@
 # Generated from departments/devops/agents/infra-engineer.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Infrastructure engineer - Dockerfiles and Compose setups, hosting and platform configuration (Vercel and others), environments, environment variables and their documentation, health checks, logs and monitoring hooks. Use when the project must be containerized, configured for a hosting platform, given a new environment or variable, or when a deployment fails for infrastructure reasons."
 agent_type = "subagent"
 system_prompt_id = "infra-engineer"

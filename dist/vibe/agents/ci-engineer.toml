@@ -1,4 +1,5 @@
 # Generated from departments/devops/agents/ci-engineer.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "CI/CD engineer - GitHub Actions workflows for linting, tests, builds, previews and releases that are fast, reliable and secure, and the fix of failing pipelines. Use when a project needs CI, when a workflow must change or is failing, or to add checks such as end-to-end tests or audits to the pipeline."
 agent_type = "subagent"
 system_prompt_id = "ci-engineer"

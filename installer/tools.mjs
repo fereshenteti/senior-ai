@@ -28,6 +28,9 @@ export const TOOLS = [
     configDir: () => process.env.SENIOR_AI_VIBE_DIR || process.env.VIBE_HOME || path.join(home(), '.vibe'),
     // The VS Code extension bundles its own Vibe and reads the same folder (VIBE_HOME or ~/.vibe).
     editorExtension: 'mistralai.mistral-vibe-code',
+    // Older Vibe commands ignore an agent's own prompt in Vibe's newer engine, so the agents lose their roles.
+    minVersion: '2.26.0',
+    upgrade: 'uv tool upgrade mistral-vibe',
     install: {
       unix: 'curl -LsSf https://mistral.ai/vibe/install.sh | bash',
       windows:
@@ -75,18 +78,23 @@ export function findEditorExtension(id) {
   return best;
 }
 
-// Returns one entry per known tool: { ...tool, installed, version, via, configDir, hasConfig }.
+const olderThan = (version, min) => Boolean(version && min) && version.localeCompare(min, undefined, { numeric: true }) < 0;
+
+// Returns one entry per known tool: { ...tool, installed, version, via, outdated, configDir, hasConfig }.
 // `via` says how it was found: its command, or an editor extension (which needs no command).
 export function detectTools() {
   return TOOLS.map(tool => {
     const probe = runCommand(tool.command, ['--version'], { timeout: 20_000 });
     const extension = !probe.ok && tool.editorExtension ? findEditorExtension(tool.editorExtension) : null;
     const configDir = tool.configDir();
+    const version = probe.ok ? parseVersion(probe.stdout + probe.stderr) : (extension?.version ?? '');
     return {
       ...tool,
       installed: probe.ok || Boolean(extension),
-      version: probe.ok ? parseVersion(probe.stdout + probe.stderr) : (extension?.version ?? ''),
+      version,
       via: probe.ok ? 'command' : extension ? `${extension.editor} extension` : '',
+      // An extension's version is its own, not the Vibe it bundles, so only a command is compared.
+      outdated: probe.ok && olderThan(version, tool.minVersion),
       configDir,
       hasConfig: fs.existsSync(configDir),
     };

@@ -1,5 +1,6 @@
 # Generated from departments/frontend/agents/frontend-security.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Read-only frontend security auditor - XSS and unsafe HTML, sanitizer bypasses, token and session storage, open redirects, third-party scripts, secrets in client code, and client-side trust mistakes. Use after frontend changes that handle user input, authentication, tokens, HTML rendering, URLs, storage or third-party code."
 agent_type = "subagent"
 system_prompt_id = "frontend-security"
 disabled_tools = ["edit", "write_file"]

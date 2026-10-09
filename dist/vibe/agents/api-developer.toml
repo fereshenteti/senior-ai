@@ -1,4 +1,5 @@
 # Generated from departments/backend/agents/api-developer.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Backend developer for APIs and services - endpoints, DTO validation, business logic, authentication and authorization wiring, integrations with other systems, and their unit and end-to-end tests. Use for backend features, new or changed endpoints, services, guards, background jobs or third-party integrations."
 agent_type = "subagent"
 system_prompt_id = "api-developer"

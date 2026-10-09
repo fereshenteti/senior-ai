@@ -1,4 +1,5 @@
 # Generated from departments/devops/agents/release-manager.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Release manager - prepares releases (version number, changelog, release notes, migration and rollback steps), checks that everything is ready, and after the user's approval runs the deployment and verifies it, with rollback ready. Use when the user wants to release, deploy to production, cut a version, or roll back."
 agent_type = "subagent"
 system_prompt_id = "release-manager"

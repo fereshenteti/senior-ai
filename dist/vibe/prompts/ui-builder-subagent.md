@@ -23,4 +23,4 @@ Load each when its topic comes up; don't load everything up front.
 - Don't install dependencies or change global config (Storybook, angular.json, tokens) without saying so; ask first for anything non-trivial.
 
 ## In Mistral Vibe
-You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you runs them and sends you their findings to fix.
+You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you starts them itself and sends you their findings to fix.

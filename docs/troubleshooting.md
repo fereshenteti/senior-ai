@@ -30,5 +30,8 @@ Without a terminal, nobody can answer Vibe's approval prompts, so it waits. For 
 **Vibe is only installed as the VS Code extension**
 That's supported: the installer finds the extension and installs into the same folder it reads (`%USERPROFILE%\.vibe` on Windows, `~/.vibe` elsewhere). Afterwards, reload the editor window and pick a senior-ai agent in the Vibe panel's agent selector. Safety hooks run with Node, so Node.js must be on the PATH the editor starts with: restart the editor after installing Node.
 
+**Vibe: the orchestrator works alone or acts like plain Vibe**
+Use Vibe 2.26.0 or newer: older versions ignore an agent's own instructions in Vibe's newer engine, so the agents lose their roles and cannot find their reviewers. Check with `vibe --version`; upgrade with `uv tool upgrade mistral-vibe`. The VS Code extension updates itself. Then re-run the installer with `--tool vibe`. To check that delegation works, ask the orchestrator for a review: Vibe should show `Starting …` for a reviewer such as `frontend-security`.
+
 **Vibe agents don't appear**
 Re-run the installer with `--tool vibe` and restart Vibe. Main agents are picked with `Shift+Tab`; reviewers are subagents that the main agent calls.

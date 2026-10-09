@@ -1,5 +1,6 @@
 # Generated from departments/backend/agents/db-reviewer.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Read-only database reviewer - schema design, constraints, indexes, query performance, N+1 patterns and migrations that could lock tables, break running code or lose data. Use after any change to the schema, migrations, data backfills or database queries."
 agent_type = "subagent"
 system_prompt_id = "db-reviewer"
 disabled_tools = ["edit", "write_file"]

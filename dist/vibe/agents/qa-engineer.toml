@@ -1,5 +1,6 @@
 # Generated from departments/core/agents/qa-engineer.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "QA engineer. Turns a story's acceptance criteria into Playwright end-to-end tests, runs them against the running app and reports pass or fail per criterion with evidence. Acts as the final acceptance checker of a story. Use when a story's tasks are done, when end-to-end tests are requested, or to reproduce a user-facing bug."
 agent_type = "subagent"
 system_prompt_id = "qa-engineer"
 # Needs a vision-capable model to read screenshots, for example:

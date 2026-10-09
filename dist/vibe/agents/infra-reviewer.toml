@@ -1,5 +1,6 @@
 # Generated from departments/devops/agents/infra-reviewer.md; edit that file, not this one.
-# Subagent: a main agent delegates to it with the task tool.
+# Subagent: a main agent delegates to it.
+description = "Read-only infrastructure and DevOps reviewer - secrets, dependencies and supply chain, Dockerfiles and Compose, CI/CD workflow permissions and triggers, hosting and cloud configuration, environment separation and rollback readiness. Use after any change to Dockerfiles, Compose files, CI workflows, hosting configuration, environment variables or dependencies."
 agent_type = "subagent"
 system_prompt_id = "infra-reviewer"
 disabled_tools = ["edit", "write_file"]

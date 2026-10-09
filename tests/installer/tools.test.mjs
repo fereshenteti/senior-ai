@@ -95,3 +95,16 @@ test('Claude Code is never found through an editor extension', async () => {
   const tools = byId(await withHome(home => extension(home, '.vscode', 'anthropic.claude-code-2.1.0'), () => withPath(tempDir(), () => detectTools())));
   assert.equal(tools.claude.installed, false);
 });
+
+test('flags a vibe command older than the version the agents need', async () => {
+  const bin = tempDir();
+  fakeCli(bin, 'vibe', { output: 'vibe 2.25.5' });
+  assert.equal(byId(await withPath(bin, () => detectTools())).vibe.outdated, true);
+  fakeCli(bin, 'vibe', { output: 'vibe 2.26.0' });
+  assert.equal(byId(await withPath(bin, () => detectTools())).vibe.outdated, false);
+});
+
+test('never flags the extension, whose version is not the bundled Vibe', async () => {
+  const tools = byId(await withHome(home => extension(home, '.vscode', 'mistralai.mistral-vibe-code-1.0.0'), () => withPath(tempDir(), () => detectTools())));
+  assert.equal(tools.vibe.outdated, false);
+});
