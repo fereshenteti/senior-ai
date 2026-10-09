@@ -24,7 +24,7 @@ export function emit(output) {
   if (output) process.stdout.write(JSON.stringify(output) + '\n');
 }
 
-// Hooks of a project's own copy of senior-ai (.senior-ai/system) run with --project.
+// Hooks installed in a project by setup-project (.claude/hooks or .vibe/hooks) run with --project.
 export const isProjectCopy = () => process.argv.includes('--project');
 
 // Vibe loads the machine-wide hooks and a project's own hooks together. The machine-wide ones
@@ -34,8 +34,7 @@ export const isProjectCopy = () => process.argv.includes('--project');
 export function projectCopyRunsInstead(cwd = process.cwd()) {
   if (isProjectCopy() || toolArg() !== 'vibe') return false;
   const hooksToml = path.join(cwd, '.vibe', 'hooks.toml');
-  if (!fs.existsSync(path.join(cwd, '.senior-ai', 'system', 'hooks')) || !fs.existsSync(hooksToml)) return false;
-  if (!fs.readFileSync(hooksToml, 'utf8').includes('.senior-ai/system/hooks/')) return false;
+  if (!fs.existsSync(hooksToml) || !fs.readFileSync(hooksToml, 'utf8').includes('--tool vibe --project')) return false;
   return vibeTrusts(cwd);
 }
 

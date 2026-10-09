@@ -141,19 +141,20 @@ It looks at the project, then asks you, in one message:
 3. whether the project memory (`.senior-ai/`) is **shared in git** with the team or **kept on your machine** (added to `.gitignore`);
 4. whether your Claude sessions should **start as the orchestrator** (default: no).
 
-It then copies the whole system into the project, in `.senior-ai/system/` (agents, skills, rules and hooks), and generates the files Claude Code and Vibe read from it (`.claude/`, `.vibe/`). It also writes a project `AGENTS.md` with the facts it found (stack, commands, design source) and the team rules, and creates the project memory. Commit everything it lists: every teammate then gets the same team, without installing anything else.
+It then installs senior-ai in each tool's own project folders, where your team can edit it and commit it like any other code:
 
-In this project, senior-ai's machine-wide install steps aside, so nothing runs twice. In Vibe, trust the folder when asked; Vibe ignores a project's `.vibe/` folder until you do.
+| | Mistral Vibe | Claude Code |
+|---|---|---|
+| agents | `.vibe/agents/` + `.vibe/prompts/` | `.claude/agents/` |
+| skills | `.vibe/skills/` | `.claude/skills/` |
+| hooks | `.vibe/hooks/` + `.vibe/hooks.toml` | `.claude/hooks/` + `.claude/settings.json` |
+| rules | `AGENTS.md` | `AGENTS.md` (imported by `CLAUDE.md`) |
 
-### Change the team's system
+When the team uses both tools, skills and hook scripts exist only once, in `.claude/`, and `.vibe/config.toml` points Vibe at them. Only the agents exist in each tool's format.
 
-The copy in `.senior-ai/system/` belongs to the project: improve an agent, a skill or a rule there, then regenerate the tool files and commit both:
+It also writes a project `AGENTS.md` with the facts it found (stack, commands, design source) and creates the project memory. Commit everything it lists: every teammate then gets the same team, without installing anything else.
 
-```bash
-node .senior-ai/system/build/project.mjs
-```
-
-Add `--check` in CI to catch a forgotten regeneration. See `.senior-ai/system/README.md` in the project.
+In that project, senior-ai's machine-wide install steps aside, so nothing runs twice. In Vibe, trust the folder when asked; Vibe ignores a project's `.vibe/` folder until you do.
 
 ---
 
@@ -224,13 +225,9 @@ Windows:
 .\install.cmd --tool vibe
 ```
 
-**A project's copy** is updated separately, when the team chooses. First get the new version on your machine as above, then in the project:
+**A project** is updated separately, when the team chooses. First get the new version on your machine as above, then in the project ask the agent: *"Run the setup-project skill with --update"*.
 
-```bash
-node .senior-ai/system/build/project.mjs --update
-```
-
-It takes senior-ai's changes and keeps the files your team changed. When senior-ai changed one of them too, your version stays and the new one is saved next to it as `<file>.senior-ai-new`, so you can merge them. Review the result with `git diff`, then commit.
+It replaces the senior-ai files your team didn't change. When your team and senior-ai both changed a file, your version stays and the new one is saved next to it as `<file>.senior-ai-new`, so you can merge them. Review the result with `git diff`, then commit.
 
 ---
 

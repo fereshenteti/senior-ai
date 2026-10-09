@@ -26,7 +26,7 @@ node build/index.mjs
 
 CI fails when `dist/` is out of date (`node build/index.mjs --check`).
 
-`build/project.mjs` is the same generators for a project's own copy: `setup-project` copies the sources and `build/` into `<project>/.senior-ai/system/`, and the team runs it there (`node .senior-ai/system/build/project.mjs`) to write `.claude/`, `.vibe/` and the rules block in `AGENTS.md`. Keep `build/` free of anything outside the folders it copies (`AGENTS.md`, `senior-ai.json`, `departments/`, `hooks/`, `build/`).
+`build/project.mjs` installs senior-ai into a project, in each tool's own folders, using the same generators; the `setup-project` skill runs it from the senior-ai found on the machine.
 
 ## Agent format
 

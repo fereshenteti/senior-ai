@@ -28,9 +28,9 @@ const isFresh = file => {
 };
 
 // Vibe installs record the version in VERSION; the Claude plugin reads its own manifest; a
-// project's copy has senior-ai.json next to its hooks folder.
+// project records it in senior-ai.lock.json next to its hooks.
 function installedVersion() {
-  if (isProjectCopy()) return JSON.parse(fs.readFileSync(path.join(HERE, '..', 'senior-ai.json'), 'utf8')).version;
+  if (isProjectCopy()) return JSON.parse(fs.readFileSync(path.join(HERE, 'senior-ai.lock.json'), 'utf8')).version;
   const versionFile = path.join(HERE, 'VERSION');
   if (fs.existsSync(versionFile)) return readText(versionFile);
   return JSON.parse(fs.readFileSync(path.join(HERE, '..', '.claude-plugin', 'plugin.json'), 'utf8')).version;
@@ -87,9 +87,9 @@ async function main() {
 
   if (isProjectCopy()) {
     const notice =
-      `senior-ai ${latest} is available (this project's copy is ${installed}). To update the copy, get the new ` +
+      `senior-ai ${latest} is available (this project has ${installed}). To update the project, get the new ` +
       'version on this machine (`claude plugin marketplace update feres`, or git pull in your senior-ai folder), ' +
-      'then run in the project: node .senior-ai/system/build/project.mjs --update';
+      'then ask the agent to run the setup-project skill with --update.';
     if (tool === 'vibe') {
       fs.mkdirSync(STATE_DIR, { recursive: true });
       fs.writeFileSync(vibeNotified, '');

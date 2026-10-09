@@ -19,7 +19,7 @@ Agents start every session without memory. The `.senior-ai/` folder at the root 
 
 `setup-project` asks you once:
 - **Shared in git** (recommended for teams): commit `.senior-ai/` so everyone, and every tool, sees the same stories and decisions.
-- **Kept on your machine:** the memory files in `.senior-ai/` are added to `.gitignore`. The team's copy of senior-ai in `.senior-ai/system/` is always committed.
+- **Kept on your machine:** `.senior-ai/` is added to `.gitignore`.
 
 Change your mind later by editing `.gitignore`.
 
