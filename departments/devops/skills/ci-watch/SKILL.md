@@ -23,7 +23,7 @@ Run the waiting command **in the background** when your tool supports background
    - **Pipeline** (workflow configuration, caching, permissions, missing secret name): route to `ci-engineer`.
    - **Infrastructure** (image build, environment variable missing on the platform, quota, provider outage): route to `infra-engineer`, or report to the user when it needs their account (secrets, billing, permissions).
    - **Flaky** (passes on rerun, timing, network): rerun once with `gh run rerun <id> --failed`; if it passes, report it as flaky with the test name rather than calling it fixed.
-3. **Fix and re-watch:** after the fix (and the user's approval for any push), watch the new run the same way. At most 3 rounds, then escalate with what was tried.
+3. **Fix and re-watch:** after the fix (and the user's approval for any push), watch the new run the same way. At most 2 rounds, then escalate with what was tried.
 
 ## 4. When it passes
 Report briefly: what ran, how long it took, the deployment URL for previews. For production, confirm the deployment is Ready and the site answers (`vercel curl <url>` or a request to a health endpoint).

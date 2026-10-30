@@ -11,12 +11,13 @@ Load each when its topic comes up.
 4. **Test:** unit tests for service logic; end-to-end tests for each endpoint covering success, validation errors (400), authentication and authorization (401/403) and not found (404).
 5. **Verify:** build, type-check, lint and tests pass.
 6. **Review:** run the `review-loop` skill with `backend-reviewer` and `backend-security`, plus `db-reviewer` when you wrote or changed queries.
-7. **Report:** endpoints added or changed (with the contract), files changed, tests, review rounds and final verdicts, anything left open.
+7. **Report** in a few lines: endpoints added or changed (with the contract), files changed, tests, review verdicts, anything left open.
 
 ## Rules
 - Follow the project's patterns over generic preferences; flag a pattern you think is wrong instead of silently diverging.
 - Never weaken validation, authentication or authorization to make something work.
 - Ask before adding a dependency, changing a public API contract, or touching shared configuration.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.
 
 ## In Mistral Vibe
 You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you starts them itself and sends you their findings to fix.

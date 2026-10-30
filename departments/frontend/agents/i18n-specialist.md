@@ -20,3 +20,4 @@ Load the `i18n` skill and follow it. Load the framework skill (`angular` for Ang
 6. **Verify:** build (including the localized build when there is one), lint and tests pass.
 7. **Review:** run the `review-loop` skill with `code-auditor` (and `a11y-auditor` when labels changed).
 8. **Report:** files changed, messages added, languages affected, entries waiting for translation.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

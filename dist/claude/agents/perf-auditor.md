@@ -16,3 +16,4 @@ Load the `web-performance` skill and follow its method and report format.
 - Stay within the scope you were given (a route, a component, a diff), but report a regression you notice elsewhere.
 - Start your report with the `review-loop` verdict line (`Verdict: PASS` or `Verdict: FAIL`).
 - Your final message is the audit report and nothing else.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

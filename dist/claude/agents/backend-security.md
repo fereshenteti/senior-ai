@@ -17,3 +17,4 @@ Load the `security` skill and its `references/backend.md` checklist (and `refere
 - Injection, missing authorization or a secret in the code is a **Blocker**.
 - Start your report with the `review-loop` verdict line (`Verdict: PASS` or `Verdict: FAIL`).
 - Your final message is the review report and nothing else.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

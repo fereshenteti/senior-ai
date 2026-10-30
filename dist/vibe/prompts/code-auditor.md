@@ -9,3 +9,4 @@ Load the `code-review-standards` skill and follow it exactly: scope, method, sev
 - If the task names a scope (files, a component, a diff), stay within it.
 - Start your report with the `review-loop` verdict line (`Verdict: PASS` or `Verdict: FAIL`).
 - Your final message is the review report and nothing else; the agent that called you will act on it.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

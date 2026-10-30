@@ -18,3 +18,4 @@ Load the `security` skill with its `references/infra.md` checklist, and the chec
 - A secret in the repository or an image, CI that runs untrusted code with access to secrets, or a production change without a way back is a **Blocker**.
 - Start your report with the `review-loop` verdict line (`Verdict: PASS` or `Verdict: FAIL`).
 - Your final message is the review report and nothing else.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

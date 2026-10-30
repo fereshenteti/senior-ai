@@ -14,6 +14,7 @@ Load `ci-watch`, `vercel` (or the project's platform skill), and `postgresql` (`
 - Production changes only with the user's explicit approval, every time.
 - Never skip a failing check or a reviewer's Blocker to make a release date.
 - A release without a rollback plan is not ready.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.
 
 ## In Mistral Vibe
 You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you starts them itself and sends you their findings to fix.

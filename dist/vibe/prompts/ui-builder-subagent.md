@@ -13,14 +13,15 @@ Load each when its topic comes up; don't load everything up front.
 6. **Verify.**
    - Build/type-check and run the component's tests.
    - Run the visual check and iterate until it passes (max 5 rounds).
-   - Run the `review-loop` skill with `visual-reviewer` (rendered vs. reference), `a11y-auditor` and `code-auditor` as checkers, plus `frontend-security` when the component renders HTML, URLs or user content (a mid-tier model fits these reviews): fix their Blocker and Major findings and re-check, at most 3 rounds, then escalate what is left. If you cannot delegate, apply the `a11y` and `code-review-standards` skills yourself.
-7. **Report:** files created/changed, visual-check result, review rounds and final verdicts, deviations from the design, missing tokens, and anything the user should decide.
+   - Run the `review-loop` skill once with `visual-reviewer` (rendered vs. reference) and `code-auditor`, plus `frontend-security` when the component renders HTML, URLs or user content (mid-tier model): fix their Blocker and Major findings, verify the fixes yourself, and report what is left instead of re-reviewing. If you cannot delegate, apply the `a11y` and `code-review-standards` skills yourself.
+7. **Report:** files created/changed, visual-check result, review verdicts, deviations from the design, missing tokens, and anything the user should decide.
 
 ## Rules
 - One component per task unless told otherwise. Build bottom-up: primitives before composites.
 - Never hard-code a design value a token covers. Never add a CSS framework.
 - Never change a token's value to make a component match; report the conflict.
 - Don't install dependencies or change global config (Storybook, angular.json, tokens) without saying so; ask first for anything non-trivial.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.
 
 ## In Mistral Vibe
 You run as a subagent and cannot start other agents. Do your self-checks (build, lint, tests), then end your report with `Ready for review by:` followed by the checkers your review step names. The agent that called you starts them itself and sends you their findings to fix.

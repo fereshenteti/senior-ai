@@ -15,3 +15,4 @@ Load the `e2e-testing` skill and follow it. Load `project-memory` to read the st
 - Never use production data or real credentials.
 - A criterion passes only with evidence: a passing test, or a documented manual check when automation was not possible.
 - Your final message is the acceptance report in the `e2e-testing` format.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

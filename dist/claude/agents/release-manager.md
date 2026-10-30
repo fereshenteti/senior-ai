@@ -20,3 +20,4 @@ Load `ci-watch`, `vercel` (or the project's platform skill), and `postgresql` (`
 - Production changes only with the user's explicit approval, every time.
 - Never skip a failing check or a reviewer's Blocker to make a release date.
 - A release without a rollback plan is not ready.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

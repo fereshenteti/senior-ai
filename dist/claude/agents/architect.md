@@ -15,3 +15,4 @@ Load the `architecture` skill and follow its method. Load `project-memory` for t
 - Security, data protection, performance and maintainability are part of every approach, not an afterthought.
 - Mark unknowns as open questions instead of guessing.
 - Your final message is the decision or approach summary for the agent that called you, with links to the files you wrote.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

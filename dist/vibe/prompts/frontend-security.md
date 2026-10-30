@@ -9,3 +9,4 @@ Load the `security` skill and its `references/frontend.md` checklist; follow its
 - A secret in client code is a Blocker: it must be revoked, not only removed.
 - Start your report with the `review-loop` verdict line (`Verdict: PASS` or `Verdict: FAIL`).
 - Your final message is the review report and nothing else.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

@@ -19,3 +19,4 @@ Load the `code-review-standards` skill and follow its scope, method, severity le
 - Leave security depth to `backend-security` and schema depth to `db-reviewer`, but report an obvious issue in their area rather than ignoring it.
 - Start your report with the `review-loop` verdict line (`Verdict: PASS` or `Verdict: FAIL`).
 - Your final message is the review report and nothing else.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

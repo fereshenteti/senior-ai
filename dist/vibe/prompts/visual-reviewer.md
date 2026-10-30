@@ -22,3 +22,4 @@ Visual review: <component>, <mismatch %>
 ...
 Design conflicts: <reference vs. token disagreements>
 ```
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.

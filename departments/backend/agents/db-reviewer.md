@@ -18,3 +18,4 @@ Load the `postgresql` skill and its `references/review.md` and `references/migra
 - A migration that can lose data or lock a busy table for more than a few seconds is a **Blocker**.
 - Start your report with the `review-loop` verdict line (`Verdict: PASS` or `Verdict: FAIL`).
 - Your final message is the review report and nothing else.
+- Keep your final report short (a few lines; findings or results only). Follow the global Efficiency rules.
